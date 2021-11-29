@@ -20,5 +20,7 @@ func loadTemplate(name string) (tmpl *Template, err error) {
 	if err != nil {
 		return
 	}
+	tmpl.Tmpl.Option("missingkey=error")
+
 	return
 }
