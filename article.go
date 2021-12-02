@@ -14,7 +14,6 @@ import (
 	"strings"
 
 	"github.com/BurntSushi/toml"
-	"github.com/gomarkdown/markdown"
 	"github.com/gomarkdown/markdown/parser"
 )
 
@@ -83,14 +82,12 @@ func (article *Article) processFile(dir, file string) error {
 		return err
 	}
 
-	parser := parser.NewWithExtensions(article.Extensions)
-
 	parts := strings.Split(file[:len(file)-3], "-")
 	for idx, part := range parts {
 		parts[idx] = strings.Title(part)
 	}
 	sectionName := strings.Join(parts, "")
-	sectionData := string(markdown.ToHTML(data, parser, nil))
+	sectionData := string(article.format(data))
 
 	article.Values[sectionName] = sectionData
 	return nil
