@@ -8,22 +8,23 @@ package main
 
 import (
 	"fmt"
+	"html"
 	"io"
 
 	"github.com/gomarkdown/markdown"
 	"github.com/gomarkdown/markdown/ast"
-	"github.com/gomarkdown/markdown/html"
+	mdhtml "github.com/gomarkdown/markdown/html"
 	"github.com/gomarkdown/markdown/parser"
 )
 
 func (article *Article) format(data []byte) []byte {
 	parser := parser.NewWithExtensions(article.Extensions)
 
-	opts := html.RendererOptions{
-		Flags:          html.CommonFlags,
+	opts := mdhtml.RendererOptions{
+		Flags:          mdhtml.CommonFlags,
 		RenderNodeHook: renderCodeBlock,
 	}
-	renderer := html.NewRenderer(opts)
+	renderer := mdhtml.NewRenderer(opts)
 
 	return markdown.ToHTML(data, parser, renderer)
 }
@@ -37,9 +38,9 @@ func renderCodeBlock(w io.Writer, node ast.Node, entering bool) (
 	io.WriteString(w, "<pre>\n")
 	if len(code.Info) > 00 {
 		io.WriteString(w, fmt.Sprintf("%s:\n%s",
-			code.Info, code.Literal))
+			code.Info, html.EscapeString(string(code.Literal))))
 	} else {
-		w.Write(code.Literal)
+		io.WriteString(w, html.EscapeString(string(code.Literal)))
 	}
 	io.WriteString(w, "</pre>\n")
 	return ast.GoToNext, true
