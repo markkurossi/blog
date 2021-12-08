@@ -8,7 +8,10 @@ package main
 
 import (
 	"flag"
+	"fmt"
+	"io/fs"
 	"log"
+	"os"
 
 	"github.com/gomarkdown/markdown/parser"
 )
@@ -24,6 +27,15 @@ func main() {
 
 	extensions := parser.CommonExtensions | parser.AutoHeadingIDs
 
+	root := os.DirFS("articles")
+	fs.WalkDir(root, ".", func(path string, d fs.DirEntry, err error) error {
+		if err != nil {
+			log.Fatal(err)
+		}
+		fmt.Println(path)
+		return nil
+	})
+
 	for _, arg := range flag.Args() {
 		article := NewArticle(extensions)
 		err = article.Parse(arg)
@@ -31,7 +43,7 @@ func main() {
 			log.Fatalf("process failed: %s\n", err)
 		}
 
-		err = article.Generate("out/index.html", tmpl)
+		err = article.Generate("out", tmpl)
 		if err != nil {
 			log.Fatalf("generation failed: %s\n", err)
 		}

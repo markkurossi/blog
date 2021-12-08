@@ -8,9 +8,11 @@ package main
 
 import (
 	"fmt"
+	"html"
 	"io"
 	"os"
 	"path"
+	"sort"
 	"strings"
 
 	"github.com/BurntSushi/toml"
@@ -21,6 +23,8 @@ type Article struct {
 	Values     map[string]string
 	Extensions parser.Extensions
 	Settings   Settings
+	Name       string
+	Tags       map[string]string
 }
 
 type Settings struct {
@@ -29,12 +33,14 @@ type Settings struct {
 
 type SettingsArticle struct {
 	Title string
+	Tags  []string
 }
 
 func NewArticle(extensions parser.Extensions) *Article {
 	return &Article{
 		Values:     make(map[string]string),
 		Extensions: extensions,
+		Tags:       make(map[string]string),
 	}
 }
 
@@ -44,6 +50,12 @@ func (article *Article) Parse(dir string) error {
 		return err
 	}
 	defer f.Close()
+
+	// Tags from the path.
+	parts := strings.Split(path.Clean(dir), "/")
+	for i := 1; i < len(parts)-1; i++ {
+		article.Tags[parts[i]] = parts[i]
+	}
 
 	files, err := f.Readdirnames(0)
 	if err != nil {
@@ -66,6 +78,31 @@ func (article *Article) Parse(dir string) error {
 			}
 		}
 	}
+	article.Name = path.Base(dir)
+	switch article.Name {
+	case ".", "/":
+		return fmt.Errorf("invalid input name: %s", dir)
+	}
+
+	// Create tags value.
+	for _, tag := range article.Settings.Article.Tags {
+		article.Tags[tag] = tag
+	}
+	var tags []string
+	for tag := range article.Tags {
+		tags = append(tags, tag)
+	}
+	sort.Strings(tags)
+
+	var tagsValue string
+	for idx, tag := range tags {
+		if idx > 0 {
+			tagsValue += " "
+		}
+		tagsValue += fmt.Sprintf(`<div class="tag">%s</div>`,
+			html.EscapeString(tag))
+	}
+	article.Values["Tags"] = tagsValue
 
 	return nil
 }
@@ -102,9 +139,9 @@ func (article *Article) readSettings(dir, file string) error {
 	return nil
 }
 
-func (article *Article) Generate(file string,
-	tmpl *Template) error {
+func (article *Article) Generate(dir string, tmpl *Template) error {
 
+	file := path.Join(dir, article.Name+".html")
 	f, err := os.Create(file)
 	if err != nil {
 		return err
