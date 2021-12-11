@@ -14,6 +14,7 @@ import (
 	"path"
 	"sort"
 	"strings"
+	"time"
 
 	"github.com/BurntSushi/toml"
 	"github.com/gomarkdown/markdown/parser"
@@ -25,6 +26,7 @@ type Article struct {
 	Settings   Settings
 	Name       string
 	Tags       map[string]string
+	Timestamp  time.Time
 }
 
 type Settings struct {
@@ -51,28 +53,38 @@ func (article *Article) Parse(dir string) error {
 	}
 	defer f.Close()
 
+	fmt.Printf(" - %s\n", dir)
+
 	// Tags from the path.
 	parts := strings.Split(path.Clean(dir), "/")
 	for i := 1; i < len(parts)-1; i++ {
 		article.Tags[parts[i]] = parts[i]
 	}
 
-	files, err := f.Readdirnames(0)
+	files, err := f.ReadDir(0)
 	if err != nil {
 		return err
 	}
 	for _, file := range files {
-		if strings.HasSuffix(file, "~") {
+		if strings.HasSuffix(file.Name(), "~") {
 			continue
 		}
-		fmt.Printf(" - %s\n", file)
-		if strings.HasSuffix(file, ".md") {
-			err = article.processFile(dir, file)
+		fmt.Printf("   - %s\n", file.Name())
+		fi, err := file.Info()
+		if err != nil {
+			return err
+		}
+		if fi.ModTime().After(article.Timestamp) {
+			article.Timestamp = fi.ModTime()
+		}
+
+		if strings.HasSuffix(file.Name(), ".md") {
+			err = article.processFile(dir, file.Name())
 			if err != nil {
 				return err
 			}
-		} else if file == "settings.toml" {
-			err = article.readSettings(dir, file)
+		} else if file.Name() == "settings.toml" {
+			err = article.readSettings(dir, file.Name())
 			if err != nil {
 				return err
 			}
@@ -104,7 +116,23 @@ func (article *Article) Parse(dir string) error {
 	}
 	article.Values["Tags"] = tagsValue
 
+	// XXX Published timestamp from settings.
+
+	article.Values["Links"] = ""
+
 	return nil
+}
+
+func (article *Article) IsIndex() bool {
+	return article.Name == "index"
+}
+
+func (article *Article) Title() string {
+	title, ok := article.Values["Title"]
+	if ok {
+		return title
+	}
+	return article.Name
 }
 
 func (article *Article) processFile(dir, file string) error {
