@@ -76,6 +76,7 @@ func traverse(root string) error {
 }
 
 var articles []*Article
+var tags = NewTags()
 var index *Article
 
 func processArticle(dir string) error {
@@ -87,9 +88,10 @@ func processArticle(dir string) error {
 	if article.IsIndex() {
 		index = article
 	} else {
-
 		articles = append(articles, article)
 	}
+	tags.Merge(article.Tags)
+
 	return nil
 }
 
@@ -117,6 +119,7 @@ func makeOutput() error {
 		return fmt.Errorf("no index")
 	}
 	index.Values["Links"] = indexLinks
+	index.Values["Tags"] = tags.HTML()
 
 	fmt.Printf(" - %s\n", index.Name)
 	return index.Generate("out", tmpl)

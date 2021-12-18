@@ -8,11 +8,9 @@ package main
 
 import (
 	"fmt"
-	"html"
 	"io"
 	"os"
 	"path"
-	"sort"
 	"strings"
 	"time"
 
@@ -25,7 +23,7 @@ type Article struct {
 	Extensions parser.Extensions
 	Settings   Settings
 	Name       string
-	Tags       map[string]string
+	Tags       Tags
 	Timestamp  time.Time
 }
 
@@ -42,7 +40,7 @@ func NewArticle(extensions parser.Extensions) *Article {
 	return &Article{
 		Values:     make(map[string]string),
 		Extensions: extensions,
-		Tags:       make(map[string]string),
+		Tags:       NewTags(),
 	}
 }
 
@@ -58,7 +56,7 @@ func (article *Article) Parse(dir string) error {
 	// Tags from the path.
 	parts := strings.Split(path.Clean(dir), "/")
 	for i := 1; i < len(parts)-1; i++ {
-		article.Tags[parts[i]] = parts[i]
+		article.Tags.Add(parts[i])
 	}
 
 	files, err := f.ReadDir(0)
@@ -98,23 +96,9 @@ func (article *Article) Parse(dir string) error {
 
 	// Create tags value.
 	for _, tag := range article.Settings.Article.Tags {
-		article.Tags[tag] = tag
+		article.Tags.Add(tag)
 	}
-	var tags []string
-	for tag := range article.Tags {
-		tags = append(tags, tag)
-	}
-	sort.Strings(tags)
-
-	var tagsValue string
-	for idx, tag := range tags {
-		if idx > 0 {
-			tagsValue += " "
-		}
-		tagsValue += fmt.Sprintf(`<div class="tag">%s</div>`,
-			html.EscapeString(tag))
-	}
-	article.Values["Tags"] = tagsValue
+	article.Values["Tags"] = article.Tags.HTML()
 
 	// XXX Published timestamp from settings.
 
@@ -176,5 +160,8 @@ func (article *Article) Generate(dir string, tmpl *Template) error {
 	}
 	defer f.Close()
 
-	return tmpl.Tmpl.Execute(f, article.Values)
+	if article.Name == "index" {
+		return tmpl.Index.Execute(f, article.Values)
+	}
+	return tmpl.Article.Execute(f, article.Values)
 }

@@ -7,20 +7,28 @@
 package main
 
 import (
+	"path"
 	"text/template"
 )
 
 type Template struct {
-	Tmpl *template.Template
+	Index   *template.Template
+	Article *template.Template
 }
 
 func loadTemplate(name string) (tmpl *Template, err error) {
 	tmpl = new(Template)
-	tmpl.Tmpl, err = template.ParseGlob(name + "/*.html")
+	tmpl.Index, err = template.ParseFiles(path.Join(name, "index.html"))
 	if err != nil {
 		return
 	}
-	tmpl.Tmpl.Option("missingkey=error")
+	tmpl.Article, err = template.ParseFiles(path.Join(name, "article.html"))
+	if err != nil {
+		return
+	}
+
+	tmpl.Index.Option("missingkey=error")
+	tmpl.Article.Option("missingkey=error")
 
 	return
 }
