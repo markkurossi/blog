@@ -1,0 +1,98 @@
+@font-face {
+    font-family: 'NewComputerModern10';
+    src: url('NewCM10-Book.woff2') format('woff2'),
+        url('NewCM10-Book.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'NewComputerModern08';
+    src: url('NewCM08-BookItalic.woff2') format('woff2'),
+        url('NewCM08-BookItalic.woff') format('woff');
+    font-weight: normal;
+    font-style: italic;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'NewComputerModernSans08';
+    src: url('NewCMSans08-Book.woff2') format('woff2'),
+        url('NewCMSans08-Book.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'NewComputerModernSans10';
+    src: url('NewCMSans10-Book.woff2') format('woff2'),
+        url('NewCMSans10-Book.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'NewComputerModern10';
+    src: url('NewCM10-BookItalic.woff2') format('woff2'),
+        url('NewCM10-BookItalic.woff') format('woff');
+    font-weight: normal;
+    font-style: italic;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'NewComputerModernSans08';
+    src: url('NewCMSans08-BookOblique.woff2') format('woff2'),
+        url('NewCMSans08-BookOblique.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'NewComputerModernSans10';
+    src: url('NewCMSans10-BookOblique.woff2') format('woff2'),
+        url('NewCMSans10-BookOblique.woff') format('woff');
+    font-weight: normal;
+    font-style: italic;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'NewComputerModern08';
+    src: url('NewCM08-Book.woff2') format('woff2'),
+        url('NewCM08-Book.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'NewComputerModernMath';
+    src: url('NewCMMath-Book.woff2') format('woff2'),
+        url('NewCMMath-Book.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'NewComputerModernMono10';
+    src: url('NewCMMono10-Book.woff2') format('woff2'),
+        url('NewCMMono10-Book.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'NewComputerModernMono10';
+    src: url('NewCMMono10-BookItalic.woff2') format('woff2'),
+        url('NewCMMono10-BookItalic.woff') format('woff');
+    font-weight: normal;
+    font-style: italic;
+    font-display: swap;
+}

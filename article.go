@@ -11,6 +11,7 @@ import (
 	"io"
 	"os"
 	"path"
+	"strconv"
 	"strings"
 	"time"
 
@@ -103,6 +104,7 @@ func (article *Article) Parse(dir string) error {
 	// XXX Published timestamp from settings.
 
 	article.Values["Links"] = ""
+	article.Values["Year"] = strconv.Itoa(time.Now().Year())
 
 	return nil
 }

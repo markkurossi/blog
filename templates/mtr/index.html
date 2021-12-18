@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <link rel="icon" href="favicon.png" />
+    <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+    <meta name="viewport" content="width=device-width">
+
+    <title>{{.Title}}</title>
+    <link href="woff/stylesheet.css" rel="stylesheet" type="text/css">
+    <link href="index.css" rel="stylesheet" type="text/css">
+  </head>
+  <body>
+    <div class="page-wrapper">
+      <div class="row">
+        <div class="left-column">
+          <div style="font-size: 30px;">
+            <a class="subtleA" href="https://www.markkurossi.com">Markku Rossi</a>
+          </div>
+          <a href="https://twitter.com/markkurossi">Twitter</a><br>
+          <a href="https://github.com/markkurossi">Github</a>
+        </div>
+        <div class="article-column">
+{{.ColumnArticle}}
+{{.Links}}
+
+{{.ColumnNavigation}}
+
+<hr>
+{{.Tags}}
+<p>
+Copyright &copy; {{.Year}} Markku Rossi
+        </div>
+        <div class="right-column">
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

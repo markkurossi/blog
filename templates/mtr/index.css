@@ -1,0 +1,282 @@
+
+@font-face {
+    font-family: 'NewComputerModernMono10';
+    src: url('woff/NewCMMono10-Regular.woff2') format('woff2'),
+        url('woff/NewCMMono10-Regular.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'NewComputerModern10';
+    src: url('woff/NewCM10-BoldItalic.woff2') format('woff2'),
+        url('woff/NewCM10-BoldItalic.woff') format('woff');
+    font-weight: bold;
+    font-style: italic;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'NewComputerModern08';
+    src: url('woff/NewCM08-Regular.woff2') format('woff2'),
+        url('woff/NewCM08-Regular.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'NewComputerModern08';
+    src: url('woff/NewCM08-Italic.woff2') format('woff2'),
+        url('woff/NewCM08-Italic.woff') format('woff');
+    font-weight: normal;
+    font-style: italic;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'NewComputerModernSans08';
+    src: url('woff/NewCMSans08-Oblique.woff2') format('woff2'),
+        url('woff/NewCMSans08-Oblique.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'NewComputerModernSans10';
+    src: url('woff/NewCMSans10-Bold.woff2') format('woff2'),
+        url('woff/NewCMSans10-Bold.woff') format('woff');
+    font-weight: bold;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'NewComputerModern10';
+    src: url('woff/NewCM10-Bold.woff2') format('woff2'),
+        url('woff/NewCM10-Bold.woff') format('woff');
+    font-weight: bold;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'NewComputerModernSans10';
+    src: url('woff/NewCMSans10-Regular.woff2') format('woff2'),
+        url('woff/NewCMSans10-Regular.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'NewComputerModernSans10';
+    src: url('woff/NewCMSans10-Oblique.woff2') format('woff2'),
+        url('woff/NewCMSans10-Oblique.woff') format('woff');
+    font-weight: normal;
+    font-style: italic;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'NewComputerModernSans08';
+    src: url('woff/NewCMSans08-Regular.woff2') format('woff2'),
+        url('woff/NewCMSans08-Regular.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'NewComputerModern10';
+    src: url('woff/NewCM10-Regular.woff2') format('woff2'),
+        url('woff/NewCM10-Regular.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'NewComputerModern10';
+    src: url('woff/NewCM10-Italic.woff2') format('woff2'),
+        url('woff/NewCM10-Italic.woff') format('woff');
+    font-weight: normal;
+    font-style: italic;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'NewComputerModernMono10';
+    src: url('woff/NewCMMono10-Italic.woff2') format('woff2'),
+        url('woff/NewCMMono10-Italic.woff') format('woff');
+    font-weight: normal;
+    font-style: italic;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'NewComputerModernMono10';
+    src: url('woff/NewCMMono10-Bold.woff2') format('woff2'),
+        url('woff/NewCMMono10-Bold.woff') format('woff');
+    font-weight: bold;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'NewComputerModernSans10';
+    src: url('woff/NewCMSans10-BoldOblique.woff2') format('woff2'),
+        url('woff/NewCMSans10-BoldOblique.woff') format('woff');
+    font-weight: bold;
+    font-style: italic;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'NewComputerModernMono10';
+    src: url('woff/NewCMMono10-BoldOblique.woff2') format('woff2'),
+        url('woff/NewCMMono10-BoldOblique.woff') format('woff');
+    font-weight: bold;
+    font-style: italic;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'NewComputerModernMath';
+    src: url('woff/NewCMMath-Regular.woff2') format('woff2'),
+        url('woff/NewCMMath-Regular.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+body {
+    font-family: "NewComputerModern10";
+    font-style: normal;
+    font-weight: normal;
+}
+
+.signature {
+    font-family: "NewComputerModern10";
+    font-style: normal;
+    font-weight: bold;
+    padding-top: 10px;
+}
+
+.index {
+    font-family: "NewComputerModern10";
+    font-style: normal;
+    font-weight: bold;
+    padding-top: 10px;
+}
+
+.page-wrapper {
+    font-family: "NewComputerModern10";
+    font-style: normal;
+    font-weight: normal;
+}
+
+.row {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  width: 100%;
+}
+
+.left-column {
+    display: flex;
+    flex-direction: column;
+    flex-basis: 100%;
+    flex: 2.5;
+    /* padding-top: 20px; */
+    padding: 20px 20px 20px 50px;
+    display: inline-block;
+    font-family: "NewComputerModernSans10";
+}
+.article-column {
+    display: flex;
+    flex-direction: column;
+    flex-basis: 100%;
+    flex: 6;
+    overflow-wrap: break-word;
+    text-align: justify;
+    display: inline-block;
+    padding: 0px 20px 10px 10px;
+}
+.right-column {
+    display: flex;
+    flex-direction: column;
+    flex-basis: 100%;
+    flex: 1.5;
+    /* padding-top: 20px; */
+    padding: 20px 10px 10px 10px;
+    display: inline-block;
+    font-family: "NewComputerModernSans10";
+}
+
+pre {
+    font-family: "NewComputerModernMono10";
+    border-radius: 5px;
+    background-color: #f8f8f8;
+    border: 1px solid #c5c8ca;
+    padding: 10px 10px;
+}
+
+a {
+    color: #0d6a8a;
+    text-decoration: none;
+}
+a:hover {
+   text-decoration: underline;
+}
+
+.subtleA {
+    color: black;
+    text-decoration: none;
+}
+
+
+.code {
+    font-family: "NewComputerModernMono10";
+    white-space: pre;
+    margin: 0px;
+    padding: 10px;
+    background: #f7f7f7;
+    border-radius: 5px;
+    border: solid 1px #a7a7a7;
+    margin: 5px 0px;
+}
+
+.code .keyword {
+    color: #A020F0;
+}
+
+.code .string {
+    color: #D02090;
+}
+
+.code .functionName {
+    color: #0000ff;
+}
+
+.function {
+    font-family: "NewComputerModern10";
+}
+
+.empty {
+    font-family: "NewComputerModern10";
+    font-style: italic;
+    color: #808080;
+}
+
+.tag {
+    border-radius: 2em;
+    /*border: 1px solid black;*/
+    padding: 0px 10px 5px 10px;
+    marging: 0 0.125em 0.333em 0;
+    color: #0969da;
+    background-color: #ddf4ff;
+    display: inline-block;
+}
