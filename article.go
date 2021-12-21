@@ -19,6 +19,7 @@ import (
 	"github.com/gomarkdown/markdown/parser"
 )
 
+// Article implements a blog article.
 type Article struct {
 	Values     map[string]string
 	Extensions parser.Extensions
@@ -28,15 +29,15 @@ type Article struct {
 	Timestamp  time.Time
 }
 
+// Settings define the article settings.
 type Settings struct {
-	Article SettingsArticle `toml:"article"`
+	Article struct {
+		Title string
+		Tags  []string
+	} `toml:"article"`
 }
 
-type SettingsArticle struct {
-	Title string
-	Tags  []string
-}
-
+// NewArticle creates a new article with the Markdown extensions.
 func NewArticle(extensions parser.Extensions) *Article {
 	return &Article{
 		Values:     make(map[string]string),
@@ -45,6 +46,7 @@ func NewArticle(extensions parser.Extensions) *Article {
 	}
 }
 
+// Parse parses article data from the argument directory.
 func (article *Article) Parse(dir string) error {
 	f, err := os.Open(dir)
 	if err != nil {
@@ -109,10 +111,12 @@ func (article *Article) Parse(dir string) error {
 	return nil
 }
 
+// IsIndex tests if this article is the blog main index article.
 func (article *Article) IsIndex() bool {
 	return article.Name == "index"
 }
 
+// Title returns the article title.
 func (article *Article) Title() string {
 	title, ok := article.Values["Title"]
 	if ok {
@@ -153,6 +157,8 @@ func (article *Article) readSettings(dir, file string) error {
 	return nil
 }
 
+// Generate generates article HTML to the argument directory, using
+// the specified output template.
 func (article *Article) Generate(dir string, tmpl *Template) error {
 
 	file := path.Join(dir, article.Name+".html")

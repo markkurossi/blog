@@ -15,11 +15,13 @@ import (
 	"text/template"
 )
 
+// Well-known template file names.
 const (
 	TmplIndex   = "index.html"
 	TmplArticle = "article.html"
 )
 
+// Template defines blog output template.
 type Template struct {
 	Dir       string
 	Templates map[string]*template.Template
@@ -49,7 +51,7 @@ func loadTemplate(dir string) (tmpl *Template, err error) {
 		fn := file.Name()
 
 		if file.IsDir() {
-			err = tmpl.AddAssets(path.Join(dir, fn))
+			err = tmpl.addAssets(path.Join(dir, fn))
 			if err != nil {
 				return nil, err
 			}
@@ -69,7 +71,7 @@ func loadTemplate(dir string) (tmpl *Template, err error) {
 	return
 }
 
-func (tmpl *Template) AddAssets(dir string) error {
+func (tmpl *Template) addAssets(dir string) error {
 	f, err := os.Open(dir)
 	if err != nil {
 		return err
@@ -83,7 +85,7 @@ func (tmpl *Template) AddAssets(dir string) error {
 	for _, file := range files {
 		name := path.Join(dir, file.Name())
 		if file.IsDir() {
-			err = tmpl.AddAssets(name)
+			err = tmpl.addAssets(name)
 			if err != nil {
 				return err
 			}
@@ -95,6 +97,7 @@ func (tmpl *Template) AddAssets(dir string) error {
 	return nil
 }
 
+// CopyAssets copies the template assets to the argument directory.
 func (tmpl *Template) CopyAssets(dir string) error {
 	dir = path.Clean(dir)
 	for asset, assetEntry := range tmpl.Assets {
