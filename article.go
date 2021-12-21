@@ -54,7 +54,7 @@ func (article *Article) Parse(dir string) error {
 	}
 	defer f.Close()
 
-	fmt.Printf(" - %s\n", dir)
+	Verbose(" - %s\n", dir)
 
 	// Tags from the path.
 	parts := strings.Split(path.Clean(dir), "/")
@@ -70,7 +70,7 @@ func (article *Article) Parse(dir string) error {
 		if strings.HasSuffix(file.Name(), "~") {
 			continue
 		}
-		fmt.Printf("   - %s\n", file.Name())
+		Verbose("   - %s\n", file.Name())
 		fi, err := file.Info()
 		if err != nil {
 			return err

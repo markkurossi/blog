@@ -19,9 +19,10 @@ import (
 )
 
 var (
-	program    = path.Base(os.Args[0])
-	extensions = parser.CommonExtensions | parser.AutoHeadingIDs
-	tmpl       *Template
+	program     = path.Base(os.Args[0])
+	extensions  = parser.CommonExtensions | parser.AutoHeadingIDs
+	tmpl        *Template
+	flagVerbose bool
 )
 
 func main() {
@@ -29,6 +30,9 @@ func main() {
 
 	template := flag.String("t", "templates/mtr", "blog template")
 	out := flag.String("o", "", "output directory")
+
+	flag.BoolVar(&flagVerbose, "v", false, "verbose output")
+
 	flag.Parse()
 
 	if len(*out) == 0 {
@@ -121,9 +125,9 @@ func makeOutput(out string) error {
 
 	var indexLinks string
 
-	fmt.Println("Generate")
+	Verbose("Generate")
 	for idx, article := range articles {
-		fmt.Printf(" - %s\n", article.Name)
+		Verbose(" - %s\n", article.Name)
 		if err := article.Generate(out, tmpl); err != nil {
 			return err
 		}
@@ -140,6 +144,6 @@ func makeOutput(out string) error {
 	index.Values["Links"] = indexLinks
 	index.Values["Tags"] = tags.HTML()
 
-	fmt.Printf(" - %s\n", index.Name)
+	Verbose(" - %s\n", index.Name)
 	return index.Generate(out, tmpl)
 }
