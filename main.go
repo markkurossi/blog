@@ -18,13 +18,22 @@ import (
 	"github.com/gomarkdown/markdown/parser"
 )
 
-var extensions = parser.CommonExtensions | parser.AutoHeadingIDs
-
-var tmpl *Template
+var (
+	program    = path.Base(os.Args[0])
+	extensions = parser.CommonExtensions | parser.AutoHeadingIDs
+	tmpl       *Template
+)
 
 func main() {
+	log.SetFlags(0)
+
 	template := flag.String("t", "templates/mtr", "blog template")
+	out := flag.String("o", "", "output directory")
 	flag.Parse()
+
+	if len(*out) == 0 {
+		log.Fatalf("%s: output directory not specified", program)
+	}
 
 	var err error
 
@@ -39,7 +48,7 @@ func main() {
 			log.Fatalf("process failed: %s\n", err)
 		}
 	}
-	err = makeOutput()
+	err = makeOutput(*out)
 	if err != nil {
 		log.Fatalf("failed to create output: %s\n", err)
 	}
@@ -95,7 +104,17 @@ func processArticle(dir string) error {
 	return nil
 }
 
-func makeOutput() error {
+func makeOutput(out string) error {
+	err := os.MkdirAll(out, 0777)
+	if err != nil {
+		return err
+	}
+
+	err = tmpl.CopyAssets(out)
+	if err != nil {
+		return err
+	}
+
 	sort.Slice(articles, func(i, j int) bool {
 		return articles[i].Timestamp.After(articles[j].Timestamp)
 	})
@@ -105,7 +124,7 @@ func makeOutput() error {
 	fmt.Println("Generate")
 	for idx, article := range articles {
 		fmt.Printf(" - %s\n", article.Name)
-		if err := article.Generate("out", tmpl); err != nil {
+		if err := article.Generate(out, tmpl); err != nil {
 			return err
 		}
 		if idx > 0 {
@@ -122,5 +141,5 @@ func makeOutput() error {
 	index.Values["Tags"] = tags.HTML()
 
 	fmt.Printf(" - %s\n", index.Name)
-	return index.Generate("out", tmpl)
+	return index.Generate(out, tmpl)
 }

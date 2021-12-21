@@ -163,7 +163,7 @@ func (article *Article) Generate(dir string, tmpl *Template) error {
 	defer f.Close()
 
 	if article.Name == "index" {
-		return tmpl.Index.Execute(f, article.Values)
+		return tmpl.Templates[TmplIndex].Execute(f, article.Values)
 	}
-	return tmpl.Article.Execute(f, article.Values)
+	return tmpl.Templates[TmplArticle].Execute(f, article.Values)
 }
