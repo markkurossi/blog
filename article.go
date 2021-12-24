@@ -28,13 +28,15 @@ type Article struct {
 	Name       string
 	Tags       Tags
 	Timestamp  time.Time
+	Published  bool
 }
 
 // Settings define the article settings.
 type Settings struct {
 	Article struct {
-		Title string
-		Tags  []string
+		Title     string
+		Tags      []string
+		Published time.Time
 	} `toml:"article"`
 }
 
@@ -104,10 +106,19 @@ func (article *Article) Parse(dir string) error {
 	}
 	article.Values["Tags"] = article.Tags.HTML()
 
-	// XXX Published timestamp from settings.
+	ts := article.Settings.Article.Published
+	if ts.IsZero() {
+		ts = time.Now()
+		article.Values["Draft"] = "Draft"
+		article.Values["Published"] = "Unpublished Draft"
+	} else {
+		article.Values["Draft"] = ""
+		article.Values["Published"] = ts.Format(time.UnixDate)
+		article.Published = true
+	}
 
 	article.Values["Links"] = ""
-	article.Values["Year"] = strconv.Itoa(time.Now().Year())
+	article.Values["Year"] = strconv.Itoa(ts.Year())
 
 	return nil
 }

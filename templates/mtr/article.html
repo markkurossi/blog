@@ -21,12 +21,15 @@
           <a href="index.html">Blog</a>
         </div>
         <div class="article-column">
+          {{if .Draft}}
+          <h1>*** Draft ***</h1>
+          {{end}}
 {{.ColumnArticle}}
 {{.Links}}
 <hr>
 {{.Tags}}
 <p>
-Copyright &copy; {{.Year}} Markku Rossi
+  {{.Published}} | Copyright &copy; {{.Year}} Markku Rossi
         </div>
         <div class="right-column">
         </div>

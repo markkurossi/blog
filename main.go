@@ -25,6 +25,7 @@ var (
 	extensions  = parser.CommonExtensions | parser.AutoHeadingIDs
 	tmpl        *Template
 	flagVerbose bool
+	flagDraft   bool
 )
 
 func main() {
@@ -34,6 +35,7 @@ func main() {
 	out := flag.String("o", "", "output directory")
 
 	flag.BoolVar(&flagVerbose, "v", false, "verbose output")
+	flag.BoolVar(&flagDraft, "draft", false, "process draft articles")
 
 	flag.Parse()
 
@@ -103,9 +105,11 @@ func processArticle(dir string) error {
 	if article.IsIndex() {
 		index = article
 	} else {
-		articles = append(articles, article)
+		if article.Published || flagDraft {
+			articles = append(articles, article)
+			tags.Merge(article.Tags)
+		}
 	}
-	tags.Merge(article.Tags)
 
 	return nil
 }
