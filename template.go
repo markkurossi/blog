@@ -19,6 +19,7 @@ import (
 const (
 	TmplIndex   = "index.html"
 	TmplArticle = "article.html"
+	TmplTag     = "tag.html"
 )
 
 // Template defines blog output template.

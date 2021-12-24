@@ -8,6 +8,7 @@ package main
 
 import (
 	"fmt"
+	"html"
 	"io"
 	"os"
 	"path"
@@ -59,7 +60,7 @@ func (article *Article) Parse(dir string) error {
 	// Tags from the path.
 	parts := strings.Split(path.Clean(dir), "/")
 	for i := 1; i < len(parts)-1; i++ {
-		article.Tags.Add(parts[i])
+		article.Tags.Add(parts[i], article)
 	}
 
 	files, err := f.ReadDir(0)
@@ -99,7 +100,7 @@ func (article *Article) Parse(dir string) error {
 
 	// Create tags value.
 	for _, tag := range article.Settings.Article.Tags {
-		article.Tags.Add(tag)
+		article.Tags.Add(tag, article)
 	}
 	article.Values["Tags"] = article.Tags.HTML()
 
@@ -160,9 +161,7 @@ func (article *Article) readSettings(dir, file string) error {
 // Generate generates article HTML to the argument directory, using
 // the specified output template.
 func (article *Article) Generate(dir string, tmpl *Template) error {
-
-	file := path.Join(dir, article.Name+".html")
-	f, err := os.Create(file)
+	f, err := os.Create(path.Join(dir, article.OutputName()))
 	if err != nil {
 		return err
 	}
@@ -172,4 +171,14 @@ func (article *Article) Generate(dir string, tmpl *Template) error {
 		return tmpl.Templates[TmplIndex].Execute(f, article.Values)
 	}
 	return tmpl.Templates[TmplArticle].Execute(f, article.Values)
+}
+
+// OutputName returns the article HTML output name.
+func (article *Article) OutputName() string {
+	return article.Name + ".html"
+}
+
+func (article *Article) Link() string {
+	return fmt.Sprintf(`<a href="%s">%s</a>`, article.OutputName(),
+		html.EscapeString(article.Title()))
 }

@@ -13,22 +13,24 @@ import (
 )
 
 // Tags defines article tags.
-type Tags map[string]string
+type Tags map[string][]*Article
 
 // NewTags creates a new tags object.
 func NewTags() Tags {
-	return make(map[string]string)
+	return make(map[string][]*Article)
 }
 
 // Add adds the argument tag to this tags object.
-func (tags Tags) Add(tag string) {
-	tags[tag] = tag
+func (tags Tags) Add(tag string, article *Article) {
+	tags[tag] = append(tags[tag], article)
 }
 
 // Merge adds argument tags to this tags object.
 func (tags Tags) Merge(t Tags) {
-	for k := range t {
-		tags.Add(k)
+	for tag, articles := range t {
+		for _, article := range articles {
+			tags.Add(tag, article)
+		}
 	}
 }
 
@@ -48,11 +50,16 @@ func (tags Tags) HTML() string {
 	var result string
 
 	values := tags.Tags()
-	for idx, v := range values {
+	for idx, tag := range values {
 		if idx > 0 {
 			result += " "
 		}
-		result += fmt.Sprintf(`<div class="tag">%s</div>`, html.EscapeString(v))
+		result += fmt.Sprintf(`<a href="%s"><div class="tag">%s</div></a>`,
+			TagOutputName(tag), html.EscapeString(tag))
 	}
 	return result
+}
+
+func TagOutputName(tag string) string {
+	return fmt.Sprintf("tag-%s.html", tag)
 }
