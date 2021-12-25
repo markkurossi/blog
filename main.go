@@ -182,10 +182,16 @@ func makeTagOutput(out, tag string, articles []*Article) error {
 	}
 	value += "\n</ul>\n"
 
+	h1 := fmt.Sprintf("Blog Category '%s'", tag)
+
 	values.Set(ValTitle, fmt.Sprintf("%s - Blog Category", tag))
-	values.Set(ValH1, fmt.Sprintf("Blog Category '%s'", tag))
+	values.Set(ValH1, h1)
 	values.SetRaw(ValTags, tags.HTML())
 	values.SetRaw(ValTagLinks, value)
+
+	values.Set(ValMetaTitle, h1)
+	values.Set(ValMetaDescription, fmt.Sprintf("Blog articles in category '%s'",
+		tag))
 
 	return tmpl.Templates[TmplTag].Execute(f, values)
 }
