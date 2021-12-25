@@ -6,6 +6,7 @@
 
 package main
 
+// Limits for article meta data.
 const (
 	MaxMetaTitleLen       = 70
 	MaxMetaDescriptionLen = 200

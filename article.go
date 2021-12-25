@@ -210,6 +210,7 @@ func (article *Article) OutputName() string {
 	return article.Name + ".html"
 }
 
+// Link returns an HTML link to this article.
 func (article *Article) Link() string {
 	return fmt.Sprintf(`<a href="%s">%s</a>`, article.OutputName(),
 		html.EscapeString(article.Title()))

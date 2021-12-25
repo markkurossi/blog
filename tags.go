@@ -60,6 +60,7 @@ func (tags Tags) HTML() string {
 	return result
 }
 
+// TagOutputName returns the HTML file name for the tag.
 func TagOutputName(tag string) string {
 	return fmt.Sprintf("tag-%s.html", tag)
 }
