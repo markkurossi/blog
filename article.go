@@ -22,7 +22,7 @@ import (
 
 // Article implements a blog article.
 type Article struct {
-	Values     map[string]string
+	Values     Values
 	Extensions parser.Extensions
 	Settings   Settings
 	Name       string
@@ -38,12 +38,16 @@ type Settings struct {
 		Tags      []string
 		Published time.Time
 	} `toml:"article"`
+	Meta struct {
+		Title       string
+		Description string
+	} `toml:"meta"`
 }
 
 // NewArticle creates a new article with the Markdown extensions.
 func NewArticle(extensions parser.Extensions) *Article {
 	return &Article{
-		Values:     make(map[string]string),
+		Values:     NewValues(),
 		Extensions: extensions,
 		Tags:       NewTags(),
 	}
@@ -104,21 +108,38 @@ func (article *Article) Parse(dir string) error {
 	for _, tag := range article.Settings.Article.Tags {
 		article.Tags.Add(tag, article)
 	}
-	article.Values["Tags"] = article.Tags.HTML()
+	article.Values.SetRaw(ValTags, article.Tags.HTML())
 
 	ts := article.Settings.Article.Published
 	if ts.IsZero() {
 		ts = time.Now()
-		article.Values["Draft"] = "Draft"
-		article.Values["Published"] = "Unpublished Draft"
+		article.Values.Set(ValDraft, "Draft")
+		article.Values.Set(ValPublished, "Unpublished Draft")
 	} else {
-		article.Values["Draft"] = ""
-		article.Values["Published"] = ts.Format(time.UnixDate)
+		article.Values.Set(ValDraft, "")
+		article.Values.Set(ValPublished, ts.Format(time.UnixDate))
 		article.Published = true
 	}
 
-	article.Values["Links"] = ""
-	article.Values["Year"] = strconv.Itoa(ts.Year())
+	article.Values.Set(ValLinks, "")
+	article.Values.Set(ValYear, strconv.Itoa(ts.Year()))
+
+	// Meta.
+	metaTitle := article.Settings.Meta.Title
+	if len(metaTitle) == 0 {
+		metaTitle = article.Title()
+	}
+	if len(metaTitle) > MaxMetaTitleLen {
+		return fmt.Errorf("meta title too long: %d > %d",
+			len(metaTitle), MaxMetaTitleLen)
+	}
+	metaDesc := article.Settings.Meta.Description
+	if len(metaDesc) > MaxMetaDescriptionLen {
+		return fmt.Errorf("meta description too long: %d > %d",
+			len(metaDesc), MaxMetaDescriptionLen)
+	}
+	article.Values.Set(ValMetaTitle, metaTitle)
+	article.Values.Set(ValMetaDescription, metaDesc)
 
 	return nil
 }
@@ -130,7 +151,7 @@ func (article *Article) IsIndex() bool {
 
 // Title returns the article title.
 func (article *Article) Title() string {
-	title, ok := article.Values["Title"]
+	title, ok := article.Values[ValTitle]
 	if ok {
 		return title
 	}
@@ -156,7 +177,7 @@ func (article *Article) processFile(dir, file string) error {
 	sectionName := strings.Join(parts, "")
 	sectionData := string(article.format(data))
 
-	article.Values[sectionName] = sectionData
+	article.Values.SetRaw(sectionName, sectionData)
 	return nil
 }
 
@@ -165,7 +186,7 @@ func (article *Article) readSettings(dir, file string) error {
 	if err != nil {
 		return err
 	}
-	article.Values["Title"] = article.Settings.Article.Title
+	article.Values.Set(ValTitle, article.Settings.Article.Title)
 	return nil
 }
 

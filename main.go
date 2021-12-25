@@ -14,8 +14,6 @@ import (
 	"os"
 	"path"
 	"sort"
-	"strconv"
-	"time"
 
 	"github.com/gomarkdown/markdown/parser"
 )
@@ -147,8 +145,8 @@ func makeOutput(out string) error {
 	if index == nil {
 		return fmt.Errorf("no index")
 	}
-	index.Values["Links"] = indexLinks
-	index.Values["Tags"] = tags.HTML()
+	index.Values.SetRaw(ValLinks, indexLinks)
+	index.Values.SetRaw(ValTags, tags.HTML())
 
 	Verbose(" - %s\n", index.Name)
 	if err := index.Generate(out, tmpl); err != nil {
@@ -176,7 +174,7 @@ func makeTagOutput(out, tag string, articles []*Article) error {
 	}
 	defer f.Close()
 
-	values := make(map[string]string)
+	values := NewValues()
 	value := "<ul>"
 	for _, article := range articles {
 		value += "\n  <li>"
@@ -184,11 +182,10 @@ func makeTagOutput(out, tag string, articles []*Article) error {
 	}
 	value += "\n</ul>\n"
 
-	values["Title"] = fmt.Sprintf("%s - Blog Category", tag)
-	values["H1"] = fmt.Sprintf("Blog Category '%s'", tag)
-	values["Tags"] = tags.HTML()
-	values["TagLinks"] = value
-	values["Year"] = strconv.Itoa(time.Now().Year())
+	values.Set(ValTitle, fmt.Sprintf("%s - Blog Category", tag))
+	values.Set(ValH1, fmt.Sprintf("Blog Category '%s'", tag))
+	values.SetRaw(ValTags, tags.HTML())
+	values.SetRaw(ValTagLinks, value)
 
 	return tmpl.Templates[TmplTag].Execute(f, values)
 }
