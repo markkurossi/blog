@@ -22,13 +22,14 @@ import (
 
 // Article implements a blog article.
 type Article struct {
-	Values     Values
-	Extensions parser.Extensions
-	Settings   Settings
-	Name       string
-	Tags       Tags
-	Timestamp  time.Time
-	Published  bool
+	Values       Values
+	Extensions   parser.Extensions
+	Settings     Settings
+	FolderSuffix string
+	Name         string
+	Tags         Tags
+	Timestamp    time.Time
+	Published    bool
 }
 
 // Settings define the article settings.
@@ -104,11 +105,18 @@ func (article *Article) Parse(dir string) error {
 		return fmt.Errorf("invalid input name: %s", dir)
 	}
 
+	if article.IsIndex() {
+		article.Values.SetRaw(ValOutputDir, "")
+	} else {
+		article.Values.SetRaw(ValOutputDir, "../")
+	}
+
 	// Create tags value.
 	for _, tag := range article.Settings.Article.Tags {
 		article.Tags.Add(tag, article)
 	}
-	article.Values.SetRaw(ValTags, article.Tags.HTML())
+	article.Values.SetRaw(ValTags,
+		article.Tags.HTML(article.Values[ValOutputDir]))
 
 	ts := article.Settings.Article.Published
 	if ts.IsZero() {
@@ -119,6 +127,10 @@ func (article *Article) Parse(dir string) error {
 		article.Values.Set(ValDraft, "")
 		article.Values.Set(ValPublished, ts.Format(time.UnixDate))
 		article.Published = true
+
+		// Published articles get their timestamp from the published
+		// time.
+		article.Timestamp = ts
 	}
 
 	article.Values.Set(ValLinks, "")
@@ -193,7 +205,12 @@ func (article *Article) readSettings(dir, file string) error {
 // Generate generates article HTML to the argument directory, using
 // the specified output template.
 func (article *Article) Generate(dir string, tmpl *Template) error {
-	f, err := os.Create(path.Join(dir, article.OutputName()))
+	filename := path.Join(dir, article.OutputName())
+	err := os.MkdirAll(path.Dir(filename), 0777)
+	if err != nil {
+		return err
+	}
+	f, err := os.Create(filename)
 	if err != nil {
 		return err
 	}
@@ -205,9 +222,21 @@ func (article *Article) Generate(dir string, tmpl *Template) error {
 	return tmpl.Templates[TmplArticle].Execute(f, article.Values)
 }
 
+func (article *Article) OutputFolder() string {
+	return article.Timestamp.Format("2006-01-02") + article.FolderSuffix
+}
+
+func (article *Article) SetFolderSuffix(suffix string) {
+	article.FolderSuffix = suffix
+}
+
 // OutputName returns the article HTML output name.
 func (article *Article) OutputName() string {
-	return article.Name + ".html"
+	filename := article.Name + ".html"
+	if article.IsIndex() {
+		return filename
+	}
+	return path.Join(article.OutputFolder(), filename)
 }
 
 // Link returns an HTML link to this article.

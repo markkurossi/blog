@@ -46,7 +46,7 @@ func (tags Tags) Tags() []string {
 }
 
 // HTML returns the tags as HTML.
-func (tags Tags) HTML() string {
+func (tags Tags) HTML(outputDir string) string {
 	var result string
 
 	values := tags.Tags()
@@ -54,8 +54,8 @@ func (tags Tags) HTML() string {
 		if idx > 0 {
 			result += " "
 		}
-		result += fmt.Sprintf(`<a href="%s"><div class="tag">%s</div></a>`,
-			TagOutputName(tag), html.EscapeString(tag))
+		result += fmt.Sprintf(`<a href="%s%s"><div class="tag">%s</div></a>`,
+			outputDir, TagOutputName(tag), html.EscapeString(tag))
 	}
 	return result
 }

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <link rel="icon" href="favicon.png">
+    <link rel="icon" href="{{.OutputDir}}favicon.png">
     <meta http-equiv="content-type" content="text/html;charset=UTF-8">
     <meta name="viewport" content="width=device-width">
 
@@ -22,8 +22,8 @@
     {{end}}
 
     <title>{{.Title}}</title>
-    <link href="woff/stylesheet.css" rel="stylesheet" type="text/css">
-    <link href="index.css" rel="stylesheet" type="text/css">
+    <link href="{{.OutputDir}}woff/stylesheet.css" rel="stylesheet" type="text/css">
+    <link href="{{.OutputDir}}index.css" rel="stylesheet" type="text/css">
   </head>
   <body>
     <div class="page-wrapper">
@@ -34,7 +34,7 @@
           </div>
           <a href="https://twitter.com/markkurossi">Twitter</a><br>
           <a href="https://github.com/markkurossi">Github</a><br>
-          <a href="index.html">Blog</a>
+          <a href="{{.OutputDir}}index.html">Blog</a>
         </div>
         <div class="article-column">
           {{if .Draft}}

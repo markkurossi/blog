@@ -127,11 +127,25 @@ func makeOutput(out string) error {
 		return articles[i].Timestamp.After(articles[j].Timestamp)
 	})
 
+	// Assign indices for articles, published on the same day.
+	byDay := make(map[string][]*Article)
+	for _, article := range articles {
+		folder := article.OutputFolder()
+		byDay[folder] = append(byDay[folder], article)
+	}
+	for _, group := range byDay {
+		if len(group) > 1 {
+			for idx, article := range group {
+				article.SetFolderSuffix(fmt.Sprintf("-%d", idx))
+			}
+		}
+	}
+
 	var indexLinks string
 
 	Verbose("Generate")
 	for idx, article := range articles {
-		Verbose(" - %s\n", article.Name)
+		Verbose(" - %s\n", article.OutputName())
 		if err := article.Generate(out, tmpl); err != nil {
 			return err
 		}
@@ -139,14 +153,14 @@ func makeOutput(out string) error {
 			indexLinks += "</br>"
 		}
 		indexLinks += fmt.Sprintf(`<a href="%s">%s</a>`,
-			article.Name+".html", html.EscapeString(article.Title()))
+			article.OutputName(), html.EscapeString(article.Title()))
 		indexLinks += "\n"
 	}
 	if index == nil {
 		return fmt.Errorf("no index")
 	}
 	index.Values.SetRaw(ValLinks, indexLinks)
-	index.Values.SetRaw(ValTags, tags.HTML())
+	index.Values.SetRaw(ValTags, tags.HTML(""))
 
 	Verbose(" - %s\n", index.Name)
 	if err := index.Generate(out, tmpl); err != nil {
@@ -168,6 +182,10 @@ func makeOutput(out string) error {
 }
 
 func makeTagOutput(out, tag string, articles []*Article) error {
+	sort.Slice(articles, func(i, j int) bool {
+		return articles[i].Timestamp.After(articles[j].Timestamp)
+	})
+
 	f, err := os.Create(path.Join(out, TagOutputName(tag)))
 	if err != nil {
 		return err
@@ -186,7 +204,7 @@ func makeTagOutput(out, tag string, articles []*Article) error {
 
 	values.Set(ValTitle, fmt.Sprintf("%s - Blog Category", tag))
 	values.Set(ValH1, h1)
-	values.SetRaw(ValTags, tags.HTML())
+	values.SetRaw(ValTags, tags.HTML(""))
 	values.SetRaw(ValTagLinks, value)
 
 	values.Set(ValMetaTitle, h1)

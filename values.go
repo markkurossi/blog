@@ -14,6 +14,7 @@ import (
 
 // Template variables.
 const (
+	ValOutputDir       = "OutputDir"
 	ValTitle           = "Title"
 	ValH1              = "H1"
 	ValTags            = "Tags"
