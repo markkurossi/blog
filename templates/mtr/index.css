@@ -224,6 +224,7 @@ pre {
     background-color: #f8f8f8;
     border: 1px solid #c5c8ca;
     padding: 10px 10px;
+    overflow: auto;
 }
 
 a {
