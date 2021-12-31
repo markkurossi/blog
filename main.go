@@ -51,7 +51,7 @@ func main() {
 	}
 
 	for _, arg := range flag.Args() {
-		err = traverse(arg, *out)
+		err = traverse(arg)
 		if err != nil {
 			log.Fatalf("process failed: %s\n", err)
 		}
@@ -60,13 +60,20 @@ func main() {
 	if err != nil {
 		log.Fatalf("failed to create output: %s\n", err)
 	}
+
+	if flagRTF {
+		err = makeRTF(*out)
+		if err != nil {
+			log.Fatalf("failed to create RTF output: %s\n", err)
+		}
+	}
 }
 
-func traverse(root, out string) error {
+func traverse(root string) error {
 	settings, err := os.Open(path.Join(root, "settings.toml"))
 	if err == nil {
 		settings.Close()
-		return processArticle(root, out)
+		return processArticle(root)
 	}
 	dir, err := os.Open(root)
 	if err != nil {
@@ -83,7 +90,7 @@ func traverse(root, out string) error {
 		if !entry.IsDir() {
 			continue
 		}
-		err = traverse(path.Join(root, entry.Name()), out)
+		err = traverse(path.Join(root, entry.Name()))
 		if err != nil {
 			return err
 		}
@@ -96,7 +103,7 @@ var articles []*Article
 var tags = NewTags()
 var index *Article
 
-func processArticle(dir, out string) error {
+func processArticle(dir string) error {
 	article := NewArticle(extensions)
 	err := article.Parse(dir)
 	if err != nil {
@@ -108,13 +115,6 @@ func processArticle(dir, out string) error {
 		if article.Published || flagDraft {
 			articles = append(articles, article)
 			tags.Merge(article.Tags)
-		}
-	}
-
-	if flagRTF {
-		err = article.MakeRTF(dir, out)
-		if err != nil {
-			return err
 		}
 	}
 
@@ -221,4 +221,14 @@ func makeTagOutput(out, tag string, articles []*Article) error {
 		tag))
 
 	return tmpl.Templates[TmplTag].Execute(f, values)
+}
+
+func makeRTF(out string) error {
+	for _, article := range articles {
+		err := article.GenerateRTF(out)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
 }

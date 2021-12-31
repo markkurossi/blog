@@ -30,6 +30,9 @@ type Article struct {
 	Tags         Tags
 	Timestamp    time.Time
 	Published    bool
+
+	Dir   string
+	Files []os.DirEntry
 }
 
 // Settings define the article settings.
@@ -63,6 +66,7 @@ func (article *Article) Parse(dir string) error {
 	defer f.Close()
 
 	Verbose(" - %s\n", dir)
+	article.Dir = dir
 
 	// Tags from the path.
 	parts := strings.Split(path.Clean(dir), "/")
@@ -79,6 +83,8 @@ func (article *Article) Parse(dir string) error {
 			continue
 		}
 		Verbose("   - %s\n", file.Name())
+		article.Files = append(article.Files, file)
+
 		fi, err := file.Info()
 		if err != nil {
 			return err
@@ -222,50 +228,6 @@ func (article *Article) Generate(dir string, tmpl *Template) error {
 	return tmpl.Templates[TmplArticle].Execute(f, article.Values)
 }
 
-func (article *Article) MakeRTF(input, output string) error {
-	fin, err := os.Open(input)
-	if err != nil {
-		return err
-	}
-	defer fin.Close()
-
-	files, err := fin.ReadDir(0)
-	if err != nil {
-		return err
-	}
-	for _, file := range files {
-		if !strings.HasSuffix(file.Name(), ".md") {
-			continue
-		}
-		rtf, err := article.ToRTF(path.Join(input, file.Name()))
-		if err != nil {
-			return err
-		}
-
-		base := file.Name()[:len(file.Name())-3]
-
-		filename := path.Join(output, base+".rtf")
-		err = os.MkdirAll(path.Dir(filename), 0777)
-		if err != nil {
-			return err
-		}
-		fout, err := os.Create(filename)
-		if err != nil {
-			return err
-		}
-		_, err = fout.Write(rtf)
-		if err != nil {
-			fout.Close()
-			return err
-		}
-		err = fout.Close()
-		if err != nil {
-			return err
-		}
-	}
-	return nil
-}
-
 func (article *Article) OutputFolder() string {
 	return article.Timestamp.Format("2006-01-02") + article.FolderSuffix
 }
@@ -276,7 +238,15 @@ func (article *Article) SetFolderSuffix(suffix string) {
 
 // OutputName returns the article HTML output name.
 func (article *Article) OutputName() string {
-	filename := article.Name + ".html"
+	return article.outputName(".html")
+}
+
+func (article *Article) RTFOutputName() string {
+	return article.outputName(".rtf")
+}
+
+func (article *Article) outputName(suffix string) string {
+	filename := article.Name + suffix
 	if article.IsIndex() {
 		return filename
 	}
