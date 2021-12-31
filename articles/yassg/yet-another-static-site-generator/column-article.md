@@ -68,9 +68,12 @@ The `settings.toml` file specifies the article settings:
 
 The following settings values are currently supported:
 
- - `Title`: specifies the HTML document title
- - `Tags`: select blog post tags. They are used to construct a
-   category tag cloud for navigation
+`Title`
+: Specifies the HTML document title.
+
+`Tags`
+: Select blog post tags. They are used to construct a category tag
+cloud for navigation.
 
 ## Roadmap
 
