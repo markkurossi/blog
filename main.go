@@ -24,6 +24,7 @@ var (
 	tmpl        *Template
 	flagVerbose bool
 	flagDraft   bool
+	flagRTF     bool
 )
 
 func main() {
@@ -34,6 +35,7 @@ func main() {
 
 	flag.BoolVar(&flagVerbose, "v", false, "verbose output")
 	flag.BoolVar(&flagDraft, "draft", false, "process draft articles")
+	flag.BoolVar(&flagRTF, "rtf", false, "generate RTF output")
 
 	flag.Parse()
 
@@ -49,7 +51,7 @@ func main() {
 	}
 
 	for _, arg := range flag.Args() {
-		err = traverse(arg)
+		err = traverse(arg, *out)
 		if err != nil {
 			log.Fatalf("process failed: %s\n", err)
 		}
@@ -60,11 +62,11 @@ func main() {
 	}
 }
 
-func traverse(root string) error {
+func traverse(root, out string) error {
 	settings, err := os.Open(path.Join(root, "settings.toml"))
 	if err == nil {
 		settings.Close()
-		return processArticle(root)
+		return processArticle(root, out)
 	}
 	dir, err := os.Open(root)
 	if err != nil {
@@ -81,7 +83,7 @@ func traverse(root string) error {
 		if !entry.IsDir() {
 			continue
 		}
-		err = traverse(path.Join(root, entry.Name()))
+		err = traverse(path.Join(root, entry.Name()), out)
 		if err != nil {
 			return err
 		}
@@ -94,7 +96,7 @@ var articles []*Article
 var tags = NewTags()
 var index *Article
 
-func processArticle(dir string) error {
+func processArticle(dir, out string) error {
 	article := NewArticle(extensions)
 	err := article.Parse(dir)
 	if err != nil {
@@ -106,6 +108,13 @@ func processArticle(dir string) error {
 		if article.Published || flagDraft {
 			articles = append(articles, article)
 			tags.Merge(article.Tags)
+		}
+	}
+
+	if flagRTF {
+		err = article.MakeRTF(dir, out)
+		if err != nil {
+			return err
 		}
 	}
 

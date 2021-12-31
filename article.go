@@ -222,6 +222,50 @@ func (article *Article) Generate(dir string, tmpl *Template) error {
 	return tmpl.Templates[TmplArticle].Execute(f, article.Values)
 }
 
+func (article *Article) MakeRTF(input, output string) error {
+	fin, err := os.Open(input)
+	if err != nil {
+		return err
+	}
+	defer fin.Close()
+
+	files, err := fin.ReadDir(0)
+	if err != nil {
+		return err
+	}
+	for _, file := range files {
+		if !strings.HasSuffix(file.Name(), ".md") {
+			continue
+		}
+		rtf, err := article.ToRTF(path.Join(input, file.Name()))
+		if err != nil {
+			return err
+		}
+
+		base := file.Name()[:len(file.Name())-3]
+
+		filename := path.Join(output, base+".rtf")
+		err = os.MkdirAll(path.Dir(filename), 0777)
+		if err != nil {
+			return err
+		}
+		fout, err := os.Create(filename)
+		if err != nil {
+			return err
+		}
+		_, err = fout.Write(rtf)
+		if err != nil {
+			fout.Close()
+			return err
+		}
+		err = fout.Close()
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
 func (article *Article) OutputFolder() string {
 	return article.Timestamp.Format("2006-01-02") + article.FolderSuffix
 }
