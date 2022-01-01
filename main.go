@@ -152,7 +152,7 @@ func makeOutput(out string) error {
 
 	var indexLinks string
 
-	Verbose("Generate")
+	Verbose("Generate\n")
 	for idx, article := range articles {
 		Verbose(" - %s\n", article.OutputName())
 		if err := article.Generate(out, tmpl); err != nil {

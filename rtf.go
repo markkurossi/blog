@@ -32,6 +32,9 @@ func (rtf *RtfRenderer) RenderNode(w io.Writer, node ast.Node,
 	var nextInText bool
 
 	switch n := node.(type) {
+	case *ast.Document, *ast.Link:
+		nextInText = true
+
 	case *ast.Heading:
 		if entering {
 			if rtf.InText {
@@ -49,22 +52,45 @@ func (rtf *RtfRenderer) RenderNode(w io.Writer, node ast.Node,
 		}
 		nextInText = true
 
-	case *ast.Text, *ast.Code:
+	case *ast.Text, *ast.Code, *ast.CodeBlock:
+		preserveNewlines := true
+		_, ok := node.(*ast.Text)
+		if ok {
+			preserveNewlines = false
+		}
+		_, codeBlock := node.(*ast.CodeBlock)
+		if codeBlock {
+			fmt.Fprintf(w, "\n\\par\\par\n")
+		}
+
 		leaf := node.AsLeaf()
 		if leaf != nil {
 			var data []byte
 			for _, b := range leaf.Literal {
 				switch b {
-				case '\n':
-					data = append(data, ' ')
 				case '\\':
 					data = append(data, '\\')
 					data = append(data, '\\')
+				case '\n':
+					if preserveNewlines {
+						data = append(data, []byte("\n\\par")...)
+					}
+					data = append(data, ' ')
 				default:
 					data = append(data, b)
 				}
 			}
 			w.Write(data)
+		}
+		if codeBlock {
+			fmt.Fprintf(w, "\n\\par\n")
+		}
+
+	case *ast.Emph:
+		if entering {
+			fmt.Fprintf(w, "\\i ")
+		} else {
+			fmt.Fprintf(w, "\\i0 ")
 		}
 
 	case *ast.List:
@@ -82,6 +108,29 @@ func (rtf *RtfRenderer) RenderNode(w io.Writer, node ast.Node,
 				fmt.Fprintf(w, "\\tab")
 			}
 			fmt.Fprintf(w, `\~\bullet\~`)
+		}
+
+	case *ast.Table:
+		if !entering {
+			nextInText = true
+		}
+
+	case *ast.TableHeader:
+		if entering {
+			fmt.Fprintf(w, "\\b\n")
+		} else {
+			fmt.Fprintf(w, "\\b0\n")
+		}
+
+	case *ast.TableBody:
+
+	case *ast.TableRow:
+		if entering {
+			fmt.Fprintf(w, "\\line ")
+		}
+	case *ast.TableCell:
+		if entering {
+			fmt.Fprintf(w, "\\tab ")
 		}
 
 	default:
