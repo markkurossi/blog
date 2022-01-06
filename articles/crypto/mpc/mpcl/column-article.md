@@ -129,6 +129,3 @@ to 15 GB (42%).
    and API.
  - General info about garbled circuits at
    [Wikipedia](https://en.wikipedia.org/wiki/Garbled_circuit).
-
-And finally, please join the discussion on
-[Twitter](https://twitter.com/markkurossi/status/1479000199062294534).
