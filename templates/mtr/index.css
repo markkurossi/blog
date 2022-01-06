@@ -1,157 +1,4 @@
 
-@font-face {
-    font-family: 'NewComputerModernMono10';
-    src: url('woff/NewCMMono10-Regular.woff2') format('woff2'),
-        url('woff/NewCMMono10-Regular.woff') format('woff');
-    font-weight: normal;
-    font-style: normal;
-    font-display: swap;
-}
-
-@font-face {
-    font-family: 'NewComputerModern10';
-    src: url('woff/NewCM10-BoldItalic.woff2') format('woff2'),
-        url('woff/NewCM10-BoldItalic.woff') format('woff');
-    font-weight: bold;
-    font-style: italic;
-    font-display: swap;
-}
-
-@font-face {
-    font-family: 'NewComputerModern08';
-    src: url('woff/NewCM08-Regular.woff2') format('woff2'),
-        url('woff/NewCM08-Regular.woff') format('woff');
-    font-weight: normal;
-    font-style: normal;
-    font-display: swap;
-}
-
-@font-face {
-    font-family: 'NewComputerModern08';
-    src: url('woff/NewCM08-Italic.woff2') format('woff2'),
-        url('woff/NewCM08-Italic.woff') format('woff');
-    font-weight: normal;
-    font-style: italic;
-    font-display: swap;
-}
-
-@font-face {
-    font-family: 'NewComputerModernSans08';
-    src: url('woff/NewCMSans08-Oblique.woff2') format('woff2'),
-        url('woff/NewCMSans08-Oblique.woff') format('woff');
-    font-weight: normal;
-    font-style: normal;
-    font-display: swap;
-}
-
-@font-face {
-    font-family: 'NewComputerModernSans10';
-    src: url('woff/NewCMSans10-Bold.woff2') format('woff2'),
-        url('woff/NewCMSans10-Bold.woff') format('woff');
-    font-weight: bold;
-    font-style: normal;
-    font-display: swap;
-}
-
-@font-face {
-    font-family: 'NewComputerModern10';
-    src: url('woff/NewCM10-Bold.woff2') format('woff2'),
-        url('woff/NewCM10-Bold.woff') format('woff');
-    font-weight: bold;
-    font-style: normal;
-    font-display: swap;
-}
-
-@font-face {
-    font-family: 'NewComputerModernSans10';
-    src: url('woff/NewCMSans10-Regular.woff2') format('woff2'),
-        url('woff/NewCMSans10-Regular.woff') format('woff');
-    font-weight: normal;
-    font-style: normal;
-    font-display: swap;
-}
-
-@font-face {
-    font-family: 'NewComputerModernSans10';
-    src: url('woff/NewCMSans10-Oblique.woff2') format('woff2'),
-        url('woff/NewCMSans10-Oblique.woff') format('woff');
-    font-weight: normal;
-    font-style: italic;
-    font-display: swap;
-}
-
-@font-face {
-    font-family: 'NewComputerModernSans08';
-    src: url('woff/NewCMSans08-Regular.woff2') format('woff2'),
-        url('woff/NewCMSans08-Regular.woff') format('woff');
-    font-weight: normal;
-    font-style: normal;
-    font-display: swap;
-}
-
-@font-face {
-    font-family: 'NewComputerModern10';
-    src: url('woff/NewCM10-Regular.woff2') format('woff2'),
-        url('woff/NewCM10-Regular.woff') format('woff');
-    font-weight: normal;
-    font-style: normal;
-    font-display: swap;
-}
-
-@font-face {
-    font-family: 'NewComputerModern10';
-    src: url('woff/NewCM10-Italic.woff2') format('woff2'),
-        url('woff/NewCM10-Italic.woff') format('woff');
-    font-weight: normal;
-    font-style: italic;
-    font-display: swap;
-}
-
-@font-face {
-    font-family: 'NewComputerModernMono10';
-    src: url('woff/NewCMMono10-Italic.woff2') format('woff2'),
-        url('woff/NewCMMono10-Italic.woff') format('woff');
-    font-weight: normal;
-    font-style: italic;
-    font-display: swap;
-}
-
-@font-face {
-    font-family: 'NewComputerModernMono10';
-    src: url('woff/NewCMMono10-Bold.woff2') format('woff2'),
-        url('woff/NewCMMono10-Bold.woff') format('woff');
-    font-weight: bold;
-    font-style: normal;
-    font-display: swap;
-}
-
-@font-face {
-    font-family: 'NewComputerModernSans10';
-    src: url('woff/NewCMSans10-BoldOblique.woff2') format('woff2'),
-        url('woff/NewCMSans10-BoldOblique.woff') format('woff');
-    font-weight: bold;
-    font-style: italic;
-    font-display: swap;
-}
-
-@font-face {
-    font-family: 'NewComputerModernMono10';
-    src: url('woff/NewCMMono10-BoldOblique.woff2') format('woff2'),
-        url('woff/NewCMMono10-BoldOblique.woff') format('woff');
-    font-weight: bold;
-    font-style: italic;
-    font-display: swap;
-}
-
-@font-face {
-    font-family: 'NewComputerModernMath';
-    src: url('woff/NewCMMath-Regular.woff2') format('woff2'),
-        url('woff/NewCMMath-Regular.woff') format('woff');
-    font-weight: normal;
-    font-style: normal;
-    font-display: swap;
-}
-
 body {
     font-family: "NewComputerModern10";
     font-style: normal;
@@ -191,7 +38,6 @@ body {
     flex-basis: 100%;
     flex: 2.5;
     max-width: 300px;
-    /* padding-top: 20px; */
     padding: 20px 20px 20px 50px;
     display: inline-block;
     font-family: "NewComputerModernSans10";
@@ -285,7 +131,19 @@ a:hover {
 
 table {
     border-collapse: collapse;
+    border-top: 1px solid black;
+    border-bottom: 1px solid black;
+}
+thead:before {
+    line-height:2px;
+    content:"\200C";
+    display:block;
 }
 th {
+    border-top: 1px solid black;
     border-bottom: 1px solid black;
+    padding: 0px 10px;
+}
+td {
+    padding: 0px 10px;
 }
