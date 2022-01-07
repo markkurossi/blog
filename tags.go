@@ -9,6 +9,7 @@ package main
 import (
 	"fmt"
 	"html"
+	"net/url"
 	"sort"
 )
 
@@ -62,5 +63,5 @@ func (tags Tags) HTML(outputDir string) string {
 
 // TagOutputName returns the HTML file name for the tag.
 func TagOutputName(tag string) string {
-	return fmt.Sprintf("tag-%s.html", tag)
+	return fmt.Sprintf("tag-%s.html", url.PathEscape(tag))
 }
