@@ -228,10 +228,12 @@ func (article *Article) Generate(dir string, tmpl *Template) error {
 	return tmpl.Templates[TmplArticle].Execute(f, article.Values)
 }
 
+// OutputFolder returns the article output folder name.
 func (article *Article) OutputFolder() string {
 	return article.Timestamp.Format("2006-01-02") + article.FolderSuffix
 }
 
+// SetFolderSuffix sets the article output directory suffix.
 func (article *Article) SetFolderSuffix(suffix string) {
 	article.FolderSuffix = suffix
 }
@@ -241,6 +243,7 @@ func (article *Article) OutputName() string {
 	return article.outputName(".html")
 }
 
+// RTFOutputName returns the article RTF output name.
 func (article *Article) RTFOutputName() string {
 	return article.outputName(".rtf")
 }

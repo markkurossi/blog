@@ -21,11 +21,13 @@ var headingFonts = []int{
 	32, 26, 24, 24, 24,
 }
 
+// RtfRenderer implements Markdown RTF renderer.
 type RtfRenderer struct {
 	InText    bool
 	ListLevel int
 }
 
+// RenderNode renders Markdown node to RTF.
 func (rtf *RtfRenderer) RenderNode(w io.Writer, node ast.Node,
 	entering bool) ast.WalkStatus {
 
@@ -143,15 +145,18 @@ func (rtf *RtfRenderer) RenderNode(w io.Writer, node ast.Node,
 	return ast.GoToNext
 }
 
+// RenderHeader creates the RTF document header.
 func (rtf *RtfRenderer) RenderHeader(w io.Writer, ast ast.Node) {
 	fmt.Fprintf(w, `{\rtf1\ansi\ansicpg1252\deff0\deflang1033{\fonttbl{\f0\fswiss\fcharset0 %s;}}\viewkind4\uc1\pard\ql\f0`,
 		"Arial")
 }
 
+// RenderFooter creates the RTF document trailer.
 func (rtf *RtfRenderer) RenderFooter(w io.Writer, ast ast.Node) {
 	fmt.Fprint(w, "}")
 }
 
+// GenerateRTF generates RTF representation of the article.
 func (article *Article) GenerateRTF(dir string) error {
 	input := path.Join(article.Dir, "column-article.md")
 	output := path.Join(dir, article.RTFOutputName())
@@ -171,6 +176,7 @@ func (article *Article) GenerateRTF(dir string) error {
 	return err
 }
 
+// ToRTF converts the argument markdown file to RTF.
 func (article *Article) ToRTF(file string) ([]byte, error) {
 	f, err := os.Open(file)
 	if err != nil {
