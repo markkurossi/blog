@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <link rel="icon" href="{{.OutputDir}}favicon.png">
+    <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+    <meta name="viewport" content="width=device-width">
+
+    <title>{{.Title}}</title>
+    <link href="{{.OutputDir}}woff/stylesheet.css" rel="stylesheet" type="text/css">
+    <link href="{{.OutputDir}}index.css" rel="stylesheet" type="text/css">
+  </head>
+  <body>
+    <div class="page-wrapper">
+      <div class="row">
+        <div class="left-column">
+          <div style="text-align: center; display: inline-block;
+                      padding: 10px;">
+            <img src="logo.png" width="64" align="middle"><br>MPCL
+          </div>
+          <ul>
+            <li><a href="apidoc.html">API Documentation</a>
+            <li><a href="https://github.com/markkurossi/mpc">GitHub</a>
+          </ul>
+        </div>
+        <div class="article-column">
+{{.Content}}
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
