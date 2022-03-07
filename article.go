@@ -58,6 +58,8 @@ func NewArticle(extensions parser.Extensions) *Article {
 	}
 }
 
+// NewSiteArticle creates a new site article with the Markdown
+// extensions.
 func NewSiteArticle(extensions parser.Extensions, name string) *Article {
 	article := &Article{
 		Values:     NewValues(),
@@ -183,6 +185,7 @@ func (article *Article) Parse(dir string) error {
 	return nil
 }
 
+// ParseSiteFile parses a site input file.
 func (article *Article) ParseSiteFile(file, section string) error {
 	f, err := os.Open(file)
 	if err != nil {
