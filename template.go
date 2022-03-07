@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2021 Markku Rossi
+// Copyright (c) 2021-2022 Markku Rossi
 //
 // All rights reserved.
 //
@@ -56,6 +56,7 @@ func loadTemplate(dir string) (tmpl *Template, err error) {
 			if err != nil {
 				return nil, err
 			}
+		} else if strings.HasSuffix(fn, "~") {
 		} else if strings.HasSuffix(fn, ".html") {
 			t, err := template.ParseFiles(path.Join(dir, fn))
 			if err != nil {
