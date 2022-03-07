@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2021 Markku Rossi
+// Copyright (c) 2021-2022 Markku Rossi
 //
 // All rights reserved.
 //
@@ -14,6 +14,7 @@ import (
 	"os"
 	"path"
 	"sort"
+	"strings"
 
 	"github.com/gomarkdown/markdown/parser"
 )
@@ -25,6 +26,8 @@ var (
 	flagVerbose bool
 	flagDraft   bool
 	flagRTF     bool
+	flagSite    bool
+	flagLibrary string
 )
 
 func main() {
@@ -36,6 +39,8 @@ func main() {
 	flag.BoolVar(&flagVerbose, "v", false, "verbose output")
 	flag.BoolVar(&flagDraft, "draft", false, "process draft articles")
 	flag.BoolVar(&flagRTF, "rtf", false, "generate RTF output")
+	flag.BoolVar(&flagSite, "site", false, "site mode")
+	flag.StringVar(&flagLibrary, "lib", ".", "asset library path")
 
 	flag.Parse()
 
@@ -45,17 +50,27 @@ func main() {
 
 	var err error
 
-	tmpl, err = loadTemplate(*template)
+	tmpl, err = loadTemplate(path.Join(flagLibrary, *template))
 	if err != nil {
 		log.Fatalf("failed to load template: %s", err)
 	}
 
 	for _, arg := range flag.Args() {
-		err = traverse(arg)
+		if flagSite {
+			err = traverseSite(arg, arg)
+		} else {
+			err = traverse(arg)
+		}
 		if err != nil {
 			log.Fatalf("process failed: %s\n", err)
 		}
 	}
+	if flagSite {
+		for _, a := range siteArticles {
+			articles = append(articles, a)
+		}
+	}
+
 	err = makeOutput(*out)
 	if err != nil {
 		log.Fatalf("failed to create output: %s\n", err)
@@ -67,6 +82,50 @@ func main() {
 			log.Fatalf("failed to create RTF output: %s\n", err)
 		}
 	}
+}
+
+var siteArticles = make(map[string]*Article)
+
+func traverseSite(root, dir string) error {
+	d, err := os.Open(dir)
+	if err != nil {
+		return err
+	}
+	defer d.Close()
+
+	entries, err := d.ReadDir(0)
+	if err != nil {
+		return err
+	}
+
+	for _, entry := range entries {
+		if entry.IsDir() {
+			err = traverseSite(root, path.Join(dir, entry.Name()))
+			if err != nil {
+				return err
+			}
+		} else if strings.HasSuffix(entry.Name(), ".md") {
+			name := entry.Name()
+			name = name[0 : len(name)-3]
+
+			parts := strings.Split(name, ",")
+			if len(parts) != 2 {
+				return fmt.Errorf("invalid input file '%s', expected 2 parts",
+					name)
+			}
+			article, ok := siteArticles[parts[0]]
+			if !ok {
+				article = NewSiteArticle(extensions,
+					path.Join(dir, parts[0])[len(root):])
+				siteArticles[parts[0]] = article
+			}
+			err = article.ParseSiteFile(path.Join(dir, entry.Name()), parts[1])
+			if err != nil {
+				return err
+			}
+		}
+	}
+	return nil
 }
 
 func traverse(root string) error {
@@ -164,6 +223,9 @@ func makeOutput(out string) error {
 		indexLinks += fmt.Sprintf(`<a href="%s">%s</a>`,
 			article.OutputName(), html.EscapeString(article.Title()))
 		indexLinks += "\n"
+	}
+	if flagSite {
+		return nil
 	}
 	if index == nil {
 		return fmt.Errorf("no index")

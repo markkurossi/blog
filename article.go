@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2021 Markku Rossi
+// Copyright (c) 2021-2022 Markku Rossi
 //
 // All rights reserved.
 //
@@ -30,6 +30,7 @@ type Article struct {
 	Tags         Tags
 	Timestamp    time.Time
 	Published    bool
+	Site         bool
 
 	Dir   string
 	Files []os.DirEntry
@@ -55,6 +56,26 @@ func NewArticle(extensions parser.Extensions) *Article {
 		Extensions: extensions,
 		Tags:       NewTags(),
 	}
+}
+
+func NewSiteArticle(extensions parser.Extensions, name string) *Article {
+	article := &Article{
+		Values:     NewValues(),
+		Extensions: extensions,
+		Name:       name,
+		Tags:       NewTags(),
+		Site:       true,
+	}
+
+	dir := path.Dir(name)
+	if dir == "." {
+		dir = ""
+	}
+
+	article.Values["OutputDir"] = dir
+	article.Values["Title"] = "title"
+
+	return article
 }
 
 // Parse parses article data from the argument directory.
@@ -162,6 +183,24 @@ func (article *Article) Parse(dir string) error {
 	return nil
 }
 
+func (article *Article) ParseSiteFile(file, section string) error {
+	f, err := os.Open(file)
+	if err != nil {
+		return err
+	}
+	defer f.Close()
+
+	data, err := io.ReadAll(f)
+	if err != nil {
+		return err
+	}
+	sectionName := strings.Title(section)
+	sectionData := string(article.format(data))
+
+	article.Values.SetRaw(sectionName, sectionData)
+	return nil
+}
+
 // IsIndex tests if this article is the blog main index article.
 func (article *Article) IsIndex() bool {
 	return article.Name == "index"
@@ -222,7 +261,7 @@ func (article *Article) Generate(dir string, tmpl *Template) error {
 	}
 	defer f.Close()
 
-	if article.Name == "index" {
+	if !article.Site && article.Name == "index" {
 		return tmpl.Templates[TmplIndex].Execute(f, article.Values)
 	}
 	return tmpl.Templates[TmplArticle].Execute(f, article.Values)
@@ -230,6 +269,9 @@ func (article *Article) Generate(dir string, tmpl *Template) error {
 
 // OutputFolder returns the article output folder name.
 func (article *Article) OutputFolder() string {
+	if article.Site {
+		return ""
+	}
 	return article.Timestamp.Format("2006-01-02") + article.FolderSuffix
 }
 
