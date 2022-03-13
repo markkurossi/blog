@@ -75,7 +75,6 @@ func NewSiteArticle(extensions parser.Extensions, name string) *Article {
 	}
 
 	article.Values["OutputDir"] = dir
-	article.Values["Title"] = "title"
 
 	return article
 }
@@ -166,6 +165,10 @@ func (article *Article) Parse(dir string) error {
 	article.Values.Set(ValYear, strconv.Itoa(ts.Year()))
 
 	// Meta.
+	return article.createMeta()
+}
+
+func (article *Article) createMeta() error {
 	metaTitle := article.Settings.Meta.Title
 	if len(metaTitle) == 0 {
 		metaTitle = article.Title()
@@ -202,6 +205,17 @@ func (article *Article) ParseSiteFile(file, section string) error {
 
 	article.Values.SetRaw(sectionName, sectionData)
 	return nil
+}
+
+// ParseSiteFileSettings parses site file settings.
+func (article *Article) ParseSiteFileSettings(dir, file string) error {
+	err := article.readSettings(dir, file)
+	if err != nil {
+		return err
+	}
+
+	// Meta.
+	return article.createMeta()
 }
 
 // IsIndex tests if this article is the blog main index article.

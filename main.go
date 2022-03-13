@@ -104,6 +104,16 @@ func traverseSite(root, dir string) error {
 			if err != nil {
 				return err
 			}
+		} else if strings.HasSuffix(entry.Name(), ".toml") {
+			name := entry.Name()
+			name = name[0 : len(name)-5]
+
+			article := getSiteArticle(path.Join(dir, name)[len(root):], name)
+			err = article.ParseSiteFileSettings(dir, entry.Name())
+			if err != nil {
+				return err
+			}
+
 		} else if strings.HasSuffix(entry.Name(), ".md") {
 			name := entry.Name()
 			name = name[0 : len(name)-3]
@@ -113,12 +123,8 @@ func traverseSite(root, dir string) error {
 				return fmt.Errorf("invalid input file '%s', expected 2 parts",
 					name)
 			}
-			article, ok := siteArticles[parts[0]]
-			if !ok {
-				article = NewSiteArticle(extensions,
-					path.Join(dir, parts[0])[len(root):])
-				siteArticles[parts[0]] = article
-			}
+			article := getSiteArticle(path.Join(dir, parts[0])[len(root):],
+				parts[0])
 			err = article.ParseSiteFile(path.Join(dir, entry.Name()), parts[1])
 			if err != nil {
 				return err
@@ -126,6 +132,15 @@ func traverseSite(root, dir string) error {
 		}
 	}
 	return nil
+}
+
+func getSiteArticle(fullName, name string) *Article {
+	article, ok := siteArticles[name]
+	if !ok {
+		article = NewSiteArticle(extensions, fullName)
+		siteArticles[name] = article
+	}
+	return article
 }
 
 func traverse(root string) error {

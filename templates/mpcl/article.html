@@ -5,6 +5,19 @@
     <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
     <meta name="viewport" content="width=device-width">
 
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:site" content="@markkurossi">
+    <meta name="twitter:title" content="{{.MetaTitle}}">
+
+    <meta name="og:type" content="blog">
+    <meta name="og:title" content="{{.MetaTitle}}">
+
+    {{if .MetaDescription}}
+    <meta name="description" content="{{.MetaDescription}}">
+    <meta name="twitter:description" content="{{.MetaDescription}}">
+    <meta name="og:description" content="{{.MetaDescription}}">
+    {{end}}
+
     <title>{{.Title}}</title>
     <link href="{{.OutputDir}}woff/stylesheet.css" rel="stylesheet" type="text/css">
     <link href="{{.OutputDir}}index.css" rel="stylesheet" type="text/css">
