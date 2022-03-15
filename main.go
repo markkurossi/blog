@@ -57,7 +57,9 @@ func main() {
 
 	for _, arg := range flag.Args() {
 		if flagSite {
-			err = traverseSite(arg, arg)
+			assets := NewAssets(arg)
+			siteAssets = append(siteAssets, assets)
+			err = traverseSite(assets, arg, arg)
 		} else {
 			err = traverse(arg)
 		}
@@ -85,8 +87,9 @@ func main() {
 }
 
 var siteArticles = make(map[string]*Article)
+var siteAssets []*Assets
 
-func traverseSite(root, dir string) error {
+func traverseSite(assets *Assets, root, dir string) error {
 	d, err := os.Open(dir)
 	if err != nil {
 		return err
@@ -100,10 +103,12 @@ func traverseSite(root, dir string) error {
 
 	for _, entry := range entries {
 		if entry.IsDir() {
-			err = traverseSite(root, path.Join(dir, entry.Name()))
+			err = traverseSite(assets, root, path.Join(dir, entry.Name()))
 			if err != nil {
 				return err
 			}
+		} else if strings.HasSuffix(entry.Name(), "~") {
+			// Skip Emacs backup files.
 		} else if strings.HasSuffix(entry.Name(), ".toml") {
 			name := entry.Name()
 			name = name[0 : len(name)-5]
@@ -129,6 +134,8 @@ func traverseSite(root, dir string) error {
 			if err != nil {
 				return err
 			}
+		} else {
+			assets.Add(path.Join(dir, entry.Name()), entry)
 		}
 	}
 	return nil
@@ -204,6 +211,13 @@ func makeOutput(out string) error {
 	err = tmpl.CopyAssets(out)
 	if err != nil {
 		return err
+	}
+
+	for _, asset := range siteAssets {
+		err = asset.Copy(out)
+		if err != nil {
+			return err
+		}
 	}
 
 	sort.Slice(articles, func(i, j int) bool {
