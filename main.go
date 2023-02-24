@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2021-2022 Markku Rossi
+// Copyright (c) 2021-2023 Markku Rossi
 //
 // All rights reserved.
 //
@@ -249,9 +249,16 @@ func makeOutput(out string) error {
 		if idx > 0 {
 			indexLinks += "</br>"
 		}
-		indexLinks += fmt.Sprintf(`<a href="%s">%s</a>`,
+		indexLinks += fmt.Sprintf(`<a href="%s">%s`,
 			article.OutputName(), html.EscapeString(article.Title()))
-		indexLinks += "\n"
+		switch article.Type() {
+		case TmplPresentation:
+			indexLinks += " &#x1f4fd;"
+		}
+		if !article.Published {
+			indexLinks += " [draft]"
+		}
+		indexLinks += "</a>\n"
 	}
 	if flagSite {
 		return nil

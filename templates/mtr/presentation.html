@@ -19,6 +19,10 @@
 
   <body style="display: none" class="loaded">
     <section class="slides layout-widescreen" style="transform: scale(0.982667);">
+      {{if .Draft}}
+      <h3 style="font-family: NewComputerModern10;">*** Draft ***</h3>
+      {{end}}
+
 {{.ColumnArticle}}
 
       <div class="slide-area" id="prev-slide-area"></div>
