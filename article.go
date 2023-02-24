@@ -31,9 +31,9 @@ type Article struct {
 	Timestamp    time.Time
 	Published    bool
 	Site         bool
+	Pagenum      int
 
-	Dir   string
-	Files []os.DirEntry
+	Assets *Assets
 }
 
 // Settings define the article settings.
@@ -80,6 +80,7 @@ func NewSiteArticle(extensions parser.Extensions, name string) *Article {
 	return article
 }
 
+// Type returns the article type as template well-known name string.
 func (article *Article) Type() string {
 	switch article.Settings.Article.Type {
 	case "presentation":
@@ -101,7 +102,7 @@ func (article *Article) Parse(dir string) error {
 	defer f.Close()
 
 	Verbose(" - %s\n", dir)
-	article.Dir = dir
+	article.Assets = NewAssets(dir)
 
 	// Tags from the path.
 	parts := strings.Split(path.Clean(dir), "/")
@@ -113,12 +114,15 @@ func (article *Article) Parse(dir string) error {
 	if err != nil {
 		return err
 	}
+	// Collect sources and process them once the source directory is
+	// processed. We must see settings.toml before processing the
+	// content.
+	var sources []string
 	for _, file := range files {
 		if strings.HasSuffix(file.Name(), "~") {
 			continue
 		}
 		Verbose("   - %s\n", file.Name())
-		article.Files = append(article.Files, file)
 
 		fi, err := file.Info()
 		if err != nil {
@@ -129,15 +133,25 @@ func (article *Article) Parse(dir string) error {
 		}
 
 		if strings.HasSuffix(file.Name(), ".md") {
-			err = article.processFile(dir, file.Name())
-			if err != nil {
-				return err
-			}
+			sources = append(sources, file.Name())
 		} else if file.Name() == "settings.toml" {
 			err = article.readSettings(dir, file.Name())
 			if err != nil {
 				return err
 			}
+		} else {
+			// Save asset files.
+			err = article.Assets.Add(path.Join(dir, file.Name()), file)
+			if err != nil {
+				return err
+			}
+		}
+	}
+	// Process sources.
+	for _, source := range sources {
+		err = article.processFile(dir, source)
+		if err != nil {
+			return err
 		}
 	}
 	article.Name = path.Base(dir)
@@ -285,6 +299,13 @@ func (article *Article) Generate(dir string, tmpl *Template) error {
 	if err != nil {
 		return err
 	}
+
+	// Copy asset files.
+	err = article.Assets.Copy(path.Join(dir, article.OutputFolder()))
+	if err != nil {
+		return err
+	}
+
 	f, err := os.Create(filename)
 	if err != nil {
 		return err

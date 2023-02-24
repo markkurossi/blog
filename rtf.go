@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2021 Markku Rossi
+// Copyright (c) 2021-2023 Markku Rossi
 //
 // All rights reserved.
 //
@@ -158,7 +158,7 @@ func (rtf *RtfRenderer) RenderFooter(w io.Writer, ast ast.Node) {
 
 // GenerateRTF generates RTF representation of the article.
 func (article *Article) GenerateRTF(dir string) error {
-	input := path.Join(article.Dir, "column-article.md")
+	input := path.Join(article.Assets.Dir(), "column-article.md")
 	output := path.Join(dir, article.RTFOutputName())
 
 	rtf, err := article.ToRTF(input)

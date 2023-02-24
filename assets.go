@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2022 Markku Rossi
+// Copyright (c) 2022-2023 Markku Rossi
 //
 // All rights reserved.
 //
@@ -28,6 +28,11 @@ func NewAssets(root string) *Assets {
 		root:  root,
 		files: make(map[string]os.DirEntry),
 	}
+}
+
+// Dir returns the assets root directory
+func (assets *Assets) Dir() string {
+	return assets.root
 }
 
 // Add adds a file to the assets. The file must be located under the
