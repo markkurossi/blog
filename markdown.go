@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2021 Markku Rossi
+// Copyright (c) 2021-2023 Markku Rossi
 //
 // All rights reserved.
 //
@@ -21,22 +21,45 @@ func (article *Article) format(data []byte) []byte {
 	parser := parser.NewWithExtensions(article.Extensions)
 
 	opts := mdhtml.RendererOptions{
-		Flags:          mdhtml.CommonFlags,
-		RenderNodeHook: renderCodeBlock,
+		Flags: mdhtml.CommonFlags,
 	}
+	switch article.Type() {
+	case TmplPresentation:
+		opts.RenderNodeHook = renderPresentation
+	case TmplArticle:
+		opts.RenderNodeHook = renderArticle
+	}
+
 	renderer := mdhtml.NewRenderer(opts)
 
 	return markdown.ToHTML(data, parser, renderer)
 }
 
-func renderCodeBlock(w io.Writer, node ast.Node, entering bool) (
+func renderArticle(w io.Writer, node ast.Node, entering bool) (
 	ast.WalkStatus, bool) {
 	code, ok := node.(*ast.CodeBlock)
 	if !ok {
 		return ast.GoToNext, false
 	}
 	io.WriteString(w, "<pre>\n")
-	if len(code.Info) > 00 {
+	if len(code.Info) > 0 {
+		io.WriteString(w, fmt.Sprintf("%s:\n%s",
+			code.Info, html.EscapeString(string(code.Literal))))
+	} else {
+		io.WriteString(w, html.EscapeString(string(code.Literal)))
+	}
+	io.WriteString(w, "</pre>\n")
+	return ast.GoToNext, true
+}
+
+func renderPresentation(w io.Writer, node ast.Node, entering bool) (
+	ast.WalkStatus, bool) {
+	code, ok := node.(*ast.CodeBlock)
+	if !ok {
+		return ast.GoToNext, false
+	}
+	io.WriteString(w, "<pre>\n")
+	if len(code.Info) > 0 {
 		io.WriteString(w, fmt.Sprintf("%s:\n%s",
 			code.Info, html.EscapeString(string(code.Literal))))
 	} else {

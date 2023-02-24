@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2021-2022 Markku Rossi
+// Copyright (c) 2021-2023 Markku Rossi
 //
 // All rights reserved.
 //
@@ -15,9 +15,10 @@ import (
 
 // Well-known template file names.
 const (
-	TmplIndex   = "index.html"
-	TmplArticle = "article.html"
-	TmplTag     = "tag.html"
+	TmplIndex        = "index.html"
+	TmplArticle      = "article.html"
+	TmplPresentation = "presentation.html"
+	TmplTag          = "tag.html"
 )
 
 // Template defines blog output template.

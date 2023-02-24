@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="icon" href="{{.OutputDir}}favicon.png">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+    {{if .MetaDescription}}
+    <meta name="description" content="{{.MetaDescription}}">
+    <meta name="twitter:description" content="{{.MetaDescription}}">
+    <meta name="og:description" content="{{.MetaDescription}}">
+    {{end}}
+
+    <title>{{.Title}}</title>
+    <script src="{{.OutputDir}}slides.js"></script>
+    <meta name="viewport"
+          content="width=device-width,height=device-height,initial-scale=1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+  </head>
+
+  <body style="display: none" class="loaded">
+    <section class="slides layout-widescreen" style="transform: scale(0.982667);">
+      <article class="current">
+        <h1>Crypto Means Cryptography</h1>
+
+          <div class="presenter">
+            <p>
+              Markku Rossi
+            </p>
+            <p>
+              1 May 2023
+            </p>
+          </div>
+      </article>
+
+      <article class="next">
+
+        <h3>State of the Union of Cryptography</h3>
+        <ul>
+<li>Symmetric encryption</li>
+<li>Integrity protection</li>
+<li>Public key cryptography</li>
+<li>Key exchange</li>
+</ul>
+      <span class="pagenumber">2</span>
+      </article>
+
+      <article class="far-next">
+
+        <h3>What's new?</h3>
+        <ul>
+<li>Multi-party computation</li>
+<li>Homomorphic encryption</li>
+<li>Zero-knowledge proof</li>
+</ul>
+
+      <span class="pagenumber">3</span>
+      </article>
+
+      <article class="far-next">
+
+        <h3>Code Samples</h3>
+
+<div class="code">
+<pre>
+package main
+
+import (
+    "crypto/ed25519"
+)
+
+type Garbler struct {
+    msg       [64]byte
+    privShare [64]byte
+}
+
+func main(g Garbler, privShare [64]byte) []byte {
+    var priv [64]byte
+
+    for i := 0; i &lt; len(priv); i++ {
+        priv[i] = g.privShare[i] ^ privShare[i]
+    }
+
+    return ed25519.Sign(priv, g.msg)
+}
+</pre>
+</div>
+
+      <span class="pagenumber">4</span>
+      </article>
+
+
+      <article class="far-next">
+
+        <h3>Code</h3>
+
+  <div class="code" >
+<pre><span num="1">package main</span>
+<span num="2"></span>
+<span num="3">func main() {</span>
+<span num="4">    fmt.Println(&#34;Hello, world!&#34;)</span>
+<span num="5">}</span>
+</pre>
+</div>
+
+
+      <span class="pagenumber">4</span>
+      </article>
+
+      <article class="far-next">
+        <h3>Thank you</h3>
+
+          <div class="presenter">
+            <p>
+              Markku Rossi
+            </p>
+            <p>
+              1 May 2023
+            </p>
+            <p class="link"><a href="mailto:mtr@iki.fi" target="_blank">mtr@iki.fi</a></p>
+          </div>
+      </article>
+
+    <div class="slide-area" id="prev-slide-area"></div><div class="slide-area" id="next-slide-area"></div></section>
+
+    <div id="help">
+      Use the left and right arrow keys or click the left and right
+      edges of the page to navigate between slides.<br>
+      (Press 'H' or navigate to hide this message.)
+    </div>
+
+
+    <script src="{{.OutputDir}}play.js"></script>
+
+    <link href="{{.OutputDir}}woff/stylesheet.css" rel="stylesheet" type="text/css">
+    <link href="{{.OutputDir}}presentation.css" rel="stylesheet" type="text/css">
+</body>
+</html>

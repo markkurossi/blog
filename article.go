@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2021-2022 Markku Rossi
+// Copyright (c) 2021-2023 Markku Rossi
 //
 // All rights reserved.
 //
@@ -41,6 +41,7 @@ type Settings struct {
 	Article struct {
 		Title     string
 		Tags      []string
+		Type      string
 		Published time.Time
 	} `toml:"article"`
 	Meta struct {
@@ -77,6 +78,18 @@ func NewSiteArticle(extensions parser.Extensions, name string) *Article {
 	article.Values["OutputDir"] = dir
 
 	return article
+}
+
+func (article *Article) Type() string {
+	switch article.Settings.Article.Type {
+	case "presentation":
+		return TmplPresentation
+	case "article", "":
+		return TmplArticle
+	default:
+		panic(fmt.Sprintf("unknown article type: %v",
+			article.Settings.Article.Type))
+	}
 }
 
 // Parse parses article data from the argument directory.
@@ -281,7 +294,7 @@ func (article *Article) Generate(dir string, tmpl *Template) error {
 	if !article.Site && article.Name == "index" {
 		return tmpl.Templates[TmplIndex].Execute(f, article.Values)
 	}
-	return tmpl.Templates[TmplArticle].Execute(f, article.Values)
+	return tmpl.Templates[article.Type()].Execute(f, article.Values)
 }
 
 // OutputFolder returns the article output folder name.
