@@ -351,6 +351,15 @@ func (article *Article) outputName(suffix string) string {
 
 // Link returns an HTML link to this article.
 func (article *Article) Link() string {
-	return fmt.Sprintf(`<a href="%s">%s</a>`, article.OutputName(),
+	link := fmt.Sprintf(`<a href="%s">%s`, article.OutputName(),
 		html.EscapeString(article.Title()))
+
+	switch article.Type() {
+	case TmplPresentation:
+		link += " &#x1f4fd;"
+	}
+	if !article.Published {
+		link += " [draft]"
+	}
+	return link + "</a>"
 }

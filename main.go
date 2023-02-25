@@ -9,7 +9,6 @@ package main
 import (
 	"flag"
 	"fmt"
-	"html"
 	"log"
 	"os"
 	"path"
@@ -249,16 +248,7 @@ func makeOutput(out string) error {
 		if idx > 0 {
 			indexLinks += "</br>"
 		}
-		indexLinks += fmt.Sprintf(`<a href="%s">%s`,
-			article.OutputName(), html.EscapeString(article.Title()))
-		switch article.Type() {
-		case TmplPresentation:
-			indexLinks += " &#x1f4fd;"
-		}
-		if !article.Published {
-			indexLinks += " [draft]"
-		}
-		indexLinks += "</a>\n"
+		indexLinks += article.Link() + "\n"
 	}
 	if flagSite {
 		return nil
@@ -307,15 +297,15 @@ func makeTagOutput(out, tag string, articles []*Article) error {
 	}
 	value += "\n</ul>\n"
 
-	h1 := fmt.Sprintf("Blog Category '%s'", tag)
+	h1 := fmt.Sprintf("Tag Category '%s'", tag)
 
-	values.Set(ValTitle, fmt.Sprintf("%s - Blog Category", tag))
+	values.Set(ValTitle, fmt.Sprintf("%s - Tag Category", tag))
 	values.Set(ValH1, h1)
 	values.SetRaw(ValTags, tags.HTML(""))
 	values.SetRaw(ValTagLinks, value)
 
 	values.Set(ValMetaTitle, h1)
-	values.Set(ValMetaDescription, fmt.Sprintf("Blog articles in category '%s'",
+	values.Set(ValMetaDescription, fmt.Sprintf("Articles in category '%s'",
 		tag))
 
 	return tmpl.Templates[TmplTag].Execute(f, values)
