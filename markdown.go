@@ -10,11 +10,13 @@ import (
 	"fmt"
 	"html"
 	"io"
+	"strings"
 
 	"github.com/gomarkdown/markdown"
 	"github.com/gomarkdown/markdown/ast"
 	mdhtml "github.com/gomarkdown/markdown/html"
 	"github.com/gomarkdown/markdown/parser"
+	"github.com/markkurossi/blog/asciiart"
 )
 
 func (article *Article) format(data []byte) []byte {
@@ -114,7 +116,61 @@ func (article *Article) renderPresentation(w io.Writer, node ast.Node,
 		}
 		return ast.GoToNext, true
 
+	case *ast.CodeBlock:
+		data := string(n.Literal)
+		class := "code"
+		var err error
+
+		for _, f := range strings.Split(string(n.Info), ",") {
+			Verbose(" - filter: %v\n", f)
+			data, class, err = filter(f)(data, class)
+			if err != nil {
+				fmt.Printf("filter %s: %s\n", f, err)
+			}
+		}
+
+		fmt.Fprintf(w, "<pre class=\"%s\">\n", class)
+		io.WriteString(w, html.EscapeString(data))
+		io.WriteString(w, "</pre>\n")
+		return ast.GoToNext, true
+
 	default:
 		return ast.GoToNext, false
 	}
+}
+
+func filter(name string) func(data, class string) (string, string, error) {
+	switch name {
+	case "ascii-art":
+		return filterASCIIArt
+
+	case "linenumbers":
+		return filterLinenumbers
+
+	default:
+		return filterPassthrough
+	}
+}
+
+func filterASCIIArt(data, class string) (string, string, error) {
+	return asciiart.Process(data), "ascii-art", nil
+}
+
+func filterLinenumbers(data, class string) (string, string, error) {
+	var result string
+	lines := strings.Split(strings.TrimSpace(data), "\n")
+	var format string
+	if len(lines) > 9 {
+		format = "%2d %s\n"
+	} else {
+		format = "%d %s\n"
+	}
+	for idx, line := range lines {
+		result += fmt.Sprintf(format, idx+1, line)
+	}
+	return result, class, nil
+}
+
+func filterPassthrough(data, class string) (string, string, error) {
+	return data, class, nil
 }
