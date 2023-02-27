@@ -1,0 +1,18 @@
+table {
+    border-collapse: collapse;
+    border-top: 1px solid black;
+    border-bottom: 1px solid black;
+}
+thead:before {
+    line-height:2px;
+    content:"\200C";
+    display:block;
+}
+th {
+    border-top: 1px solid black;
+    border-bottom: 1px solid black;
+    padding: 0px 10px;
+}
+td {
+    padding: 0px 10px;
+}
