@@ -377,7 +377,22 @@ li {
   letter-spacing: 0px;
 
   background: white;
-  border: 1px solid white;
+  border: 0px solid white;
+}
+
+.code-plain {
+  margin-top: 20px;
+  overflow: hidden;
+  font-family: "NewComputerModernMono10", monospace;
+  font-size: 18px;
+  line-height: 24px;
+  background: white;
+  border: 0px solid white;
+}
+
+.center {
+    display: flex;
+    justify-content: center;
 }
 
 pre {

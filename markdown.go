@@ -134,6 +134,15 @@ func (article *Article) renderPresentation(w io.Writer, node ast.Node,
 		io.WriteString(w, "</pre>\n")
 		return ast.GoToNext, true
 
+	case *ast.Image:
+		if entering {
+			fmt.Fprintf(w, `<p align="center"><img src="%s" title="%s"/>`,
+				string(n.Destination), html.EscapeString(string(n.Title)))
+		} else {
+			fmt.Fprintf(w, "</p>\n")
+		}
+		return ast.SkipChildren, true
+
 	default:
 		return ast.GoToNext, false
 	}
@@ -146,6 +155,12 @@ func filter(name string) func(data, class string) (string, string, error) {
 
 	case "linenumbers":
 		return filterLinenumbers
+
+	case "plain":
+		return filterPlain
+
+	case "center":
+		return filterCenter
 
 	default:
 		return filterPassthrough
@@ -171,6 +186,14 @@ func filterLinenumbers(data, class string) (string, string, error) {
 	return result, class, nil
 }
 
+func filterCenter(data, class string) (string, string, error) {
+	return data, class + " center", nil
+}
+
 func filterPassthrough(data, class string) (string, string, error) {
 	return data, class, nil
+}
+
+func filterPlain(data, class string) (string, string, error) {
+	return data, "code-plain", nil
 }
