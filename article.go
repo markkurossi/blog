@@ -301,9 +301,11 @@ func (article *Article) Generate(dir string, tmpl *Template) error {
 	}
 
 	// Copy asset files.
-	err = article.Assets.Copy(path.Join(dir, article.OutputFolder()))
-	if err != nil {
-		return err
+	if article.Assets != nil {
+		err = article.Assets.Copy(path.Join(dir, article.OutputFolder()))
+		if err != nil {
+			return err
+		}
 	}
 
 	f, err := os.Create(filename)
