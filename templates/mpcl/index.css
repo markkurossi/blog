@@ -1,6 +1,7 @@
 
 body {
     font-family: "NewComputerModern10";
+    font-size: large;
     font-style: normal;
     font-weight: normal;
 }
@@ -63,8 +64,14 @@ body {
     font-family: "NewComputerModernSans10";
 }
 
+code {
+    font-family: "NewComputerModernMono10";
+    font-size: medium;
+}
+
 pre {
     font-family: "NewComputerModernMono10";
+    font-size: medium;
     border-radius: 5px;
     background-color: #f8f8f8;
     border: 1px solid #c5c8ca;
@@ -87,6 +94,7 @@ a:hover {
 
 .code {
     font-family: "NewComputerModernMono10";
+    font-size: medium;
     white-space: pre;
     margin: 0px;
     padding: 10px;
