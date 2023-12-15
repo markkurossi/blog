@@ -10,6 +10,7 @@ import (
 	"strings"
 )
 
+// Region defines an ASCII art region.
 type Region struct {
 	maxWidth int
 	lines    [][]rune
@@ -29,14 +30,17 @@ func (r *Region) String() string {
 	return b.String()
 }
 
+// Width returns the width of the region in characters.
 func (r *Region) Width() int {
 	return r.maxWidth
 }
 
+// Height returns the width of the region in rows.
 func (r *Region) Height() int {
 	return len(r.lines)
 }
 
+// Get the rune from the specified coordinate.
 func (r *Region) Get(row, col int) rune {
 	if row < 0 || row >= len(r.lines) {
 		return 0
@@ -47,6 +51,7 @@ func (r *Region) Get(row, col int) rune {
 	return r.lines[row][col]
 }
 
+// Set the run in the specified coordinate.
 func (r *Region) Set(row, col int, ch rune) {
 	if row < 0 || row >= len(r.lines) {
 		return
@@ -57,6 +62,7 @@ func (r *Region) Set(row, col int, ch rune) {
 	r.lines[row][col] = ch
 }
 
+// Clone creates a copy of the region.
 func (r *Region) Clone() *Region {
 	lines := make([][]rune, len(r.lines))
 	for i, line := range r.lines {
@@ -70,6 +76,7 @@ func (r *Region) Clone() *Region {
 	}
 }
 
+// NewRegion creates a region of the input data.
 func NewRegion(input []byte) *Region {
 	var lines [][]rune
 	var width int
@@ -87,6 +94,7 @@ func NewRegion(input []byte) *Region {
 	}
 }
 
+// ASCII character connection directions.
 const (
 	FlagUp int = 1 << iota
 	FlagDown
@@ -338,6 +346,8 @@ func checkMainLines(input *Region, row, col int) int {
 	return index
 }
 
+// Process converts the input data to output string replacing ASCII
+// graphics with the corresponding ASCII Box-drawing characters.
 func Process(data string) string {
 	input := NewRegion([]byte(data))
 	output := input.Clone()
