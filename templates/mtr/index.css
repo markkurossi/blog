@@ -1,6 +1,7 @@
 
 body {
     font-family: "NewComputerModern10";
+    font-size: large;
     font-style: normal;
     font-weight: normal;
 }
@@ -64,8 +65,14 @@ body {
     font-family: "NewComputerModernSans10";
 }
 
+code {
+    font-family: "NewComputerModernMono10";
+    font-size: medium;
+}
+
 pre {
     font-family: "NewComputerModernMono10";
+    font-size: medium;
     border-radius: 5px;
     background-color: #f8f8f8;
     border: 1px solid #c5c8ca;
@@ -88,6 +95,7 @@ a:hover {
 
 .code {
     font-family: "NewComputerModernMono10";
+    font-size: medium;
     white-space: pre;
     margin: 0px;
     padding: 10px;
@@ -127,4 +135,23 @@ a:hover {
     color: #0969da;
     background-color: #ddf4ff;
     display: inline-block;
+}
+
+table {
+    border-collapse: collapse;
+    border-top: 1px solid black;
+    border-bottom: 1px solid black;
+}
+thead:before {
+    line-height:2px;
+    content:"\200C";
+    display:block;
+}
+th {
+    border-top: 1px solid black;
+    border-bottom: 1px solid black;
+    padding: 0px 10px;
+}
+td {
+    padding: 0px 10px;
 }
