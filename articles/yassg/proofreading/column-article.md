@@ -1,0 +1,4 @@
+# Proofreading
+
+ - pbcopy
+ - pbpaste
