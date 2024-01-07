@@ -1,4 +1,4 @@
-# Vegetable lasagna
+# Vegetable Lasagna
 
 Ingredients:
 
