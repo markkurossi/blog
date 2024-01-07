@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2021-2023 Markku Rossi
+// Copyright (c) 2021-2024 Markku Rossi
 //
 // All rights reserved.
 //
@@ -8,7 +8,6 @@ package main
 
 import (
 	"fmt"
-	"html"
 	"io"
 	"os"
 	"path"
@@ -354,7 +353,7 @@ func (article *Article) outputName(suffix string) string {
 // Link returns an HTML link to this article.
 func (article *Article) Link() string {
 	link := fmt.Sprintf(`<a href="%s">%s`, article.OutputName(),
-		html.EscapeString(article.Title()))
+		article.Title())
 
 	switch article.Type() {
 	case TmplPresentation:

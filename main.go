@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2021-2023 Markku Rossi
+// Copyright (c) 2021-2024 Markku Rossi
 //
 // All rights reserved.
 //
@@ -187,7 +187,7 @@ func processArticle(dir string) error {
 	article := NewArticle(extensions)
 	err := article.Parse(dir)
 	if err != nil {
-		return err
+		return fmt.Errorf("%s: %s", dir, err.Error())
 	}
 	if article.IsIndex() {
 		index = article
