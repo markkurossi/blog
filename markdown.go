@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2021-2023 Markku Rossi
+// Copyright (c) 2021-2024 Markku Rossi
 //
 // All rights reserved.
 //
@@ -163,6 +163,16 @@ func filter(name string) func(data, class string) (string, string, error) {
 		return filterCenter
 
 	default:
+		if strings.HasPrefix(name, "class:") {
+			extra := strings.Split(name[6:], ",")
+			return func(data, class string) (string, string, error) {
+				for _, e := range extra {
+					class += " "
+					class += e
+				}
+				return data, class, nil
+			}
+		}
 		return filterPassthrough
 	}
 }

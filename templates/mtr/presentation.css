@@ -360,10 +360,19 @@ li {
   overflow: hidden;
   font-family: "NewComputerModernMono10", monospace;
   font-size: 18px;
-  line-height: 24px;
+  line-height: 1.2;
 
   background-color: #f8f8f8;
   border: 1px solid #c5c8ca;
+}
+
+.monospace {
+    font-family: monospace;
+}
+
+img {
+    max-width: 100%;
+    max-height: 580px;
 }
 
 .ascii-art {
